@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Popit.IO", "Popit.IO\Popit.IO.csproj", "{E2A06B6F-8EAB-4240-B007-4BE6DE89C251}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PopIt.Game.Tests", "PopIt.Game.Tests\PopIt.Game.Tests.csproj", "{EE133DA5-809E-42FB-B9AF-D53A0021214F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E2A06B6F-8EAB-4240-B007-4BE6DE89C251}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2A06B6F-8EAB-4240-B007-4BE6DE89C251}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2A06B6F-8EAB-4240-B007-4BE6DE89C251}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2A06B6F-8EAB-4240-B007-4BE6DE89C251}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE133DA5-809E-42FB-B9AF-D53A0021214F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE133DA5-809E-42FB-B9AF-D53A0021214F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE133DA5-809E-42FB-B9AF-D53A0021214F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE133DA5-809E-42FB-B9AF-D53A0021214F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {658D1564-9E01-4A6B-BFB9-7B8996CF717B}
+	EndGlobalSection
+EndGlobal
