@@ -3,11 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Popit.IO", "Popit.IO\Popit.IO.csproj", "{E2A06B6F-8EAB-4240-B007-4BE6DE89C251}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Popit.IO", "Popit.IO\Popit.IO.csproj", "{E2A06B6F-8EAB-4240-B007-4BE6DE89C251}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PopIt.Game.Tests", "PopIt.Game.Tests\PopIt.Game.Tests.csproj", "{EE133DA5-809E-42FB-B9AF-D53A0021214F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PopIt.Game.Tests", "PopIt.Game.Tests\PopIt.Game.Tests.csproj", "{EE133DA5-809E-42FB-B9AF-D53A0021214F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PopIt.Game", "PopIt.Game\PopIt.Game.csproj", "{CA274507-3D44-4F01-9688-FC8DAD089665}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PopIt.Game", "PopIt.Game\PopIt.Game.csproj", "{CA274507-3D44-4F01-9688-FC8DAD089665}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E97B55B-48E5-4FB2-A914-940B84278944}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
