@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Popit.IO", "Popit.IO\Popit.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PopIt.Game.Tests", "PopIt.Game.Tests\PopIt.Game.Tests.csproj", "{EE133DA5-809E-42FB-B9AF-D53A0021214F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PopIt.Game", "PopIt.Game\PopIt.Game.csproj", "{CA274507-3D44-4F01-9688-FC8DAD089665}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{EE133DA5-809E-42FB-B9AF-D53A0021214F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE133DA5-809E-42FB-B9AF-D53A0021214F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE133DA5-809E-42FB-B9AF-D53A0021214F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA274507-3D44-4F01-9688-FC8DAD089665}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA274507-3D44-4F01-9688-FC8DAD089665}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA274507-3D44-4F01-9688-FC8DAD089665}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA274507-3D44-4F01-9688-FC8DAD089665}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
