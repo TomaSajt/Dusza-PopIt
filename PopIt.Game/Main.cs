@@ -1,4 +1,4 @@
-﻿using Popit.IO;
+﻿using PopIt.IO;
 
 IOManager.Start();
 IOManager.MouseDown += (x, y) =>

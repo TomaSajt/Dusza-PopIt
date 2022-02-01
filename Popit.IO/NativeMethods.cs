@@ -1,4 +1,4 @@
-﻿namespace Popit.IO;
+﻿namespace PopIt.IO;
 using System.Runtime.InteropServices;
 internal static class NativeMethods
 {
