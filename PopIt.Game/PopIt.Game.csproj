@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Popit.IO\Popit.IO.csproj" />
+		<ProjectReference Include="..\PopIt.IO\PopIt.IO.csproj" />
 	</ItemGroup>
 
 </Project>
