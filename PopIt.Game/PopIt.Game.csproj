@@ -6,7 +6,26 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<OutputType>Exe</OutputType>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>popit128.png</PackageIcon>
+		<RepositoryUrl>https://github.com/TomaSajt/Dusza-PopIt</RepositoryUrl>
+		<ApplicationIcon>popit128.ico</ApplicationIcon>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <Content Include="popit128.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\images\popit128.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Include="..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\PopIt.IO\PopIt.IO.csproj" />
