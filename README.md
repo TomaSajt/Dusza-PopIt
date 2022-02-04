@@ -33,16 +33,26 @@ _For more examples, please refer to the [Documentation](https://isze.hu/wp-conte
 ## Roadmap
 
 - [x] Add roadmap
-- [ ] Implement IO
-    - [ ] Menu system
-    - [ ] Buttons
-    - [ ] Arrow Controls
-    - [ ] Mouse Controls
-        - [x] Detect mouse click
-        - [ ] Use mouse click
+- [ ] Better IO
+    - [ ] Input
+        - [ ] Menu system
+        - [ ] Buttons
+        - [ ] Arrow Controls
+        - [ ] Mouse Controls
+            - [x] Detect mouse click
+            - [ ] Use mouse click
+    - [ ] Output
+        - [ ] New Board Visuals
+            - [ ] 4 color system
+            - [ ] 
+    - [ ] Mixed
+        - [ ] Option Prompts
 - [ ] Reimplement game
     - [x] Use Board class instead of multiple 2D matrices
     - [ ] Game Logic
+    - [ ] Board Generation
+        - [x] 0 twists
+        - [ ] n twists
 
 See the [open issues](https://github.com/TomaSajt/Dusza-PopIt/issues) for a full list of proposed features (and known issues).
 
