@@ -1,16 +1,29 @@
 ﻿using PopIt.Game.Data;
+using System.Text;
 
 namespace PopIt.Game;
 internal class Game
 {
-    private int CurrentPlayer { get; set; }
-    private int PlayerCount { get; }
+    public int PlayerCount { get; init; } = 2;
+    private int CurrentPlayer { get; set; } = 0;
+    private Board CurrentBoard { get; set; }
     private void NextPlayer() => CurrentPlayer = (CurrentPlayer + 1) % PlayerCount;
 
     public Game()
     {
-        CurrentPlayer = 0;
-        PlayerCount = 2;
-        var board = new Board(10, 20);
+        CurrentBoard = BoardUtils.CreateFromFile("palya1.txt");
+    }
+    public void Render()
+    {
+        StringBuilder sb = new();
+        for (int i = 0; i < CurrentBoard.Height; i++)
+        {
+            for (int j = 0; j < CurrentBoard.Width; j++)
+            {
+                sb.Append(CurrentBoard[j, i].Char);
+            }
+            sb.AppendLine();
+        }
+        Console.WriteLine(sb);
     }
 }
