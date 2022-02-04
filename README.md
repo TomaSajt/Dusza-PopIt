@@ -27,7 +27,7 @@ lorem ipsum
 
 keyboard + mouse + common sense + ability to read instructions
 
-_For more examples, please refer to the [Documentation](https://isze.hu/wp-content/uploads/2017/01/Feladat_regionalis_21-22.pdf)
+_For more examples, please refer to the [Documentation](https://isze.hu/wp-content/uploads/2017/01/Feladat_regionalis_21-22.pdf)_
 
 
 ## Roadmap
