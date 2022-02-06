@@ -26,8 +26,6 @@ internal class Board
             }
         }
     }
-
-    private static Random rand = new();
     public static Board LoadFromFile(string path)
     {
         try
