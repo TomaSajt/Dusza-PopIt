@@ -2,6 +2,8 @@
 using System.Runtime.InteropServices;
 internal static class NativeMethods
 {
+
+#pragma warning disable CS0649
     public record struct COORD(short X, short Y);
 
     [StructLayout(LayoutKind.Explicit)]
@@ -23,6 +25,7 @@ internal static class NativeMethods
 
     public struct MOUSE_EVENT_RECORD
     {
+
         public COORD dwMousePosition;
 
         public const uint
@@ -116,5 +119,6 @@ internal static class NativeMethods
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
     public static extern bool WriteConsoleInput(IntPtr hConsoleInput, INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsWritten);
 
+#pragma warning restore CS0649
 }
 

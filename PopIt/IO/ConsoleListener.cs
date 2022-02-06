@@ -4,7 +4,8 @@ internal static class ConsoleListener
 {
     #region Events
 
-    public static event ConsoleMouseEvent? MouseEventRecieved = null;
+    public static event ConsoleMouseEvent? MouseEvent = null;
+    public static event ConsoleWindowBufferSizeEvent? ConsoleWindowResizeEvent = null;
 
     #endregion
 
@@ -51,7 +52,11 @@ internal static class ConsoleListener
                 }
                 if (record[0].EventType == INPUT_RECORD.MOUSE_EVENT)
                 {
-                    MouseEventRecieved?.Invoke(record[0].MouseEvent);
+                    MouseEvent?.Invoke(record[0].MouseEvent);
+                }
+                if (record[0].EventType == INPUT_RECORD.WINDOW_BUFFER_SIZE_EVENT)
+                {
+                    ConsoleWindowResizeEvent?.Invoke(record[0].WindowBufferSizeEvent);
                 }
             }
         }).Start();

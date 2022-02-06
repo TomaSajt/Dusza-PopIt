@@ -1,4 +1,5 @@
 ﻿using PopIt.Data;
+using PopIt.Exception;
 
 namespace PopIt;
 internal class Game
@@ -32,12 +33,15 @@ internal class Game
         Console.WriteLine(sb);*/
         for (int i = 0; i < CurrentBoard.Height; i++)
         {
-            for (int j = 0; j < CurrentBoard.Width; j++) {
-                Console.BackgroundColor = colorMap[CurrentBoard[j, i].Char].Dark;
-                Console.Write($"{CurrentBoard[j, i].Char}");
+            for (int j = 0; j < CurrentBoard.Width; j++)
+            {
+                char ch = CurrentBoard[j, i].Char;
+                Console.BackgroundColor = ch == '.' ? ConsoleColor.Black : CurrentBoard[j, i].Pushed ? colorMap[ch].Light : colorMap[ch].Dark;
+                Console.Write($"  ");
             }
             Console.WriteLine();
         }
+        Console.ResetColor();
 
     }
     private Dictionary<char, ColorPair> CreateColorMap()
@@ -71,7 +75,7 @@ internal class Game
         Dictionary<char, int> colors = new();
         char[] chars = graph.Keys.ToArray();
         foreach (char ch in graph.Keys) colors.Add(ch, -1);
-        if (!Backtrack(graph, 0)) throw new Exception("Couldn't color graph with the given number of colors");
+        if (!Backtrack(graph, 0)) throw new GraphColoringException("Couldn't color graph with the given number of colors");
         return colors;
 
         bool Backtrack(Dictionary<char, HashSet<char>> graph, int v)

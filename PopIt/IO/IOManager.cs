@@ -2,15 +2,16 @@
 public static class IOManager
 {
     #region Events
-    public static event MouseEvent? MouseDown = null;
-    public static event MouseEvent? MouseUp = null;
+    public static event MouseEventData? MouseDown = null;
+    public static event MouseEventData? MouseUp = null;
+    public static event ResizeEventData? ResizeEvent = null;
     #endregion
     static bool heldState = false;
     public static void Start()
     {
         ConsoleListener.Setup();
         ConsoleListener.Start();
-        ConsoleListener.MouseEventRecieved += e =>
+        ConsoleListener.MouseEvent += e =>
         {
             bool newHeldState = (e.dwButtonState & NativeMethods.MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED) == 1;
             if (newHeldState != heldState)
@@ -20,6 +21,10 @@ public static class IOManager
             }
             heldState = newHeldState;
         };
+        ConsoleListener.ConsoleWindowResizeEvent += e =>
+        {
+            ResizeEvent?.Invoke(e.dwSize.X, e.dwSize.Y);
+        };
     }
     public static void Stop()
     {
@@ -27,5 +32,6 @@ public static class IOManager
         MouseDown = null;
         MouseUp = null;
     }
-    public delegate void MouseEvent(short x, short y);
+    public delegate void MouseEventData(short x, short y);
+    public delegate void ResizeEventData(short w, short h);
 }
