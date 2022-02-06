@@ -19,16 +19,7 @@ jobs:
         
       - name: Build
         run: dotnet build --configuration Release --no-restore --output "BuildResults"
-
-      - name: Test
-        run: dotnet test --logger trx --results-directory "TestResults"
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v2
-        with:
-          name: dotnet-test-results
-          path: TestResults
-
+        
       - name: Upload build results
         uses: actions/upload-artifact@v2
         with:
