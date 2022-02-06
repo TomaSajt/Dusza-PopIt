@@ -1,5 +1,5 @@
-﻿namespace PopIt.IO;
-using static PopIt.IO.NativeMethods;
+﻿namespace PopIt.Game.IO;
+using static PopIt.Game.IO.NativeMethods;
 internal static class ConsoleListener
 {
     #region Events

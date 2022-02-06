@@ -1,4 +1,4 @@
-﻿namespace PopIt.IO;
+﻿namespace PopIt.Game.IO;
 public static class IOManager
 {
     #region Events
