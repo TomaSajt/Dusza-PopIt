@@ -11,12 +11,6 @@
 </div>
 
 
-## About The Project
-
-
-lorem ipsum
-
-
 ### Built with
 
 * [C#](https://docs.microsoft.com/en-us/dotnet/csharp/)
@@ -43,8 +37,9 @@ _For more examples, please refer to the [Documentation](https://isze.hu/wp-conte
             - [ ] Use mouse click
     - [ ] Output
         - [ ] New Board Visuals
-            - [ ] 4 color system
-            - [ ] 
+            - [x] 4 color system
+            - [ ] use color codes instead of ConsoleColor
+            - [ ] new selection marker
     - [ ] Mixed
         - [ ] Option Prompts
 - [ ] Reimplement game
@@ -54,11 +49,9 @@ _For more examples, please refer to the [Documentation](https://isze.hu/wp-conte
         - [x] 0 twists
         - [ ] n twists
 
-See the [open issues](https://github.com/TomaSajt/Dusza-PopIt/issues) for a full list of proposed features (and known issues).
-
 
 ## License
 
-dont know, dont care + ratio
+don't know, don't care, didn't ask + ratio
 
 <p align="right">(<a href="#top">back to top</a>)</p>
