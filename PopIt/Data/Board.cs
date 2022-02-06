@@ -1,4 +1,6 @@
-﻿namespace PopIt.Data;
+﻿using PopIt.Exception;
+
+namespace PopIt.Data;
 internal class Board
 {
     private readonly Cell[,] cells;
@@ -15,6 +17,13 @@ internal class Board
                 cells[i, j] = new();
             }
         }
+    }
+    public IEnumerable<Cell> GetNeighboursAt(int x, int y)
+    {
+        if (x > 0) yield return this[x - 1, y];
+        if (y > 0) yield return this[x, y - 1];
+        if (x < Width - 1) yield return this[x + 1, y];
+        if (y < Height - 1) yield return this[x, y + 1];
     }
     public void ResetPushedNow()
     {
@@ -33,7 +42,7 @@ internal class Board
             var lines = File.ReadAllLines(path);
             var height = lines.Length;
             var width = lines[0].Length;
-            if (lines.Any(x => x.Length != width)) throw new InvalidDataException("The board was not rectangular");
+            if (lines.Any(x => x.Length != width)) throw new InvalidBoardFormatException("The board was not rectangular");
             var board = new Board(width, height);
             for (int i = 0; i < lines.Length; i++)
             {
@@ -58,6 +67,7 @@ internal class Board
             sw.WriteLine();
         }
     }
+
 
     
 
