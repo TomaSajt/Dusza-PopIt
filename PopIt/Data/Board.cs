@@ -1,4 +1,4 @@
-﻿namespace PopIt.Game.Data;
+﻿namespace PopIt.Data;
 internal class Board
 {
     private readonly Cell[,] cells;

@@ -1,9 +1,7 @@
-﻿using PopIt.Game.Data;
-
-namespace PopIt.Game;
+﻿using PopIt.Data;
+namespace PopIt;
 static internal class BoardUtils
 {
-    private static Random rand = new();
     public static Board CreateFromFile(string path)
     {
         try

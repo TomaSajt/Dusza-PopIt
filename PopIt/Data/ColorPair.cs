@@ -1,4 +1,4 @@
-﻿namespace PopIt.Game.Data;
+﻿namespace PopIt.Data;
 internal struct ColorPair
 {
     public static ColorPair Red = new(ConsoleColor.DarkRed, ConsoleColor.Red);

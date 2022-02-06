@@ -1,7 +1,6 @@
-﻿using PopIt.Game.Data;
-using System.Text;
+﻿using PopIt.Data;
 
-namespace PopIt.Game;
+namespace PopIt;
 internal class Game
 {
     private ColorPair[] colorPairs = { ColorPair.Blue, ColorPair.Red, ColorPair.Green, ColorPair.Yellow };

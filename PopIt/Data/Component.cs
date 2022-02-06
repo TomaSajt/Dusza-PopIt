@@ -1,5 +1,4 @@
-﻿
-namespace PopIt.Game.Data;
+﻿namespace PopIt.Data;
 
 internal struct Component
 {

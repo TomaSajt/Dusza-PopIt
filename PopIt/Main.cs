@@ -1,5 +1,5 @@
-﻿using PopIt.Game;
-using PopIt.Game.IO;
+﻿using PopIt;
+using PopIt.IO;
 
 IOManager.Start();
 IOManager.MouseDown += (x, y) => Console.WriteLine($"down {x} {y}");

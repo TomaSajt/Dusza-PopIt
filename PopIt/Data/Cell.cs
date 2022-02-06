@@ -1,4 +1,4 @@
-﻿namespace PopIt.Game.Data;
+﻿namespace PopIt.Data;
 internal class Cell
 {
     private Board board;
