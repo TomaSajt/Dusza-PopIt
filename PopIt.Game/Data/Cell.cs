@@ -11,5 +11,4 @@ internal class Cell
     public bool PushedNow { get; private set; } = false;
     public void Push() => Pushed = PushedNow = true;
     public void ResetPushedNow() => PushedNow = false;
-
 }
