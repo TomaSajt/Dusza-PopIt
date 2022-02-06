@@ -75,7 +75,7 @@ internal class Game
         Dictionary<char, int> colors = new();
         char[] chars = graph.Keys.ToArray();
         foreach (char ch in graph.Keys) colors.Add(ch, -1);
-        if (!Backtrack(graph, 0)) throw new GraphColoringException("Couldn't color graph with the given number of colors");
+        if (!Backtrack(graph, 0)) throw new GraphColoringException($"Couldn't color graph with the {m} colors");
         return colors;
 
         bool Backtrack(Dictionary<char, HashSet<char>> graph, int v)
