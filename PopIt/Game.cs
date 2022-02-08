@@ -1,8 +1,9 @@
 ﻿using PopIt.Data;
 using PopIt.Exception;
+using System.Text;
 
 namespace PopIt;
-internal class Game
+class Game
 {
     private readonly ColorPair[] colorPairs = { ColorPair.Blue, ColorPair.Red, ColorPair.Green, ColorPair.Yellow };
     private readonly Dictionary<char, ColorPair> colorMap;
@@ -21,28 +22,19 @@ internal class Game
     }
     public void Render()
     {
-        /*
         StringBuilder sb = new();
         for (int i = 0; i < CurrentBoard.Height; i++)
         {
             for (int j = 0; j < CurrentBoard.Width; j++)
             {
-                sb.Append($"\u001b[43m{CurrentBoard[j, i].Char}");
+                char ch = CurrentBoard[j, i].Char;
+                var col = ch == '.' ? Color.BLACK : CurrentBoard[j, i].Pushed ? colorMap[ch].Light : colorMap[ch].Dark;
+                sb.Append($"{col.ToBackColStr()}  ");
             }
             sb.AppendLine();
         }
-        Console.WriteLine(sb);*/
-        for (int i = 0; i < CurrentBoard.Height; i++)
-        {
-            for (int j = 0; j < CurrentBoard.Width; j++)
-            {
-                char ch = CurrentBoard[j, i].Char;
-                Console.BackgroundColor = ch == '.' ? ConsoleColor.Black : CurrentBoard[j, i].Pushed ? colorMap[ch].Light : colorMap[ch].Dark;
-                Console.Write($"  ");
-            }
-            Console.WriteLine();
-        }
-        Console.ResetColor();
+        sb.Append(ConsoleCodes.RESET);
+        Console.Write(sb);
 
     }
     

@@ -1,0 +1,8 @@
+﻿
+namespace PopIt;
+
+class Logger
+{
+
+}
+

@@ -1,9 +1,9 @@
 ﻿namespace PopIt.Data;
-internal record struct ColorPair(ConsoleColor Dark, ConsoleColor Light)
+record struct ColorPair(Color Dark, Color Light)
 {
-    public static ColorPair Red = new(ConsoleColor.DarkRed, ConsoleColor.Red);
-    public static ColorPair Blue = new(ConsoleColor.DarkBlue, ConsoleColor.Blue);
-    public static ColorPair Green = new(ConsoleColor.DarkGreen, ConsoleColor.Green);
-    public static ColorPair Yellow = new(ConsoleColor.DarkYellow, ConsoleColor.Yellow);
-    public static ColorPair Magenta = new(ConsoleColor.DarkMagenta, ConsoleColor.Magenta);
+    public static readonly ColorPair Red = new(Color.DARK_RED, Color.RED);
+    public static readonly ColorPair Blue = new(Color.DARK_BLUE, Color.BLUE);
+    public static readonly ColorPair Green = new(Color.DARK_GREEN, Color.GREEN);
+    public static readonly ColorPair Yellow = new(Color.DARK_YELLOW, Color.YELLOW);
+    public static readonly ColorPair Magenta = new(Color.DARK_MAGENTA, Color.MAGENTA);
 }

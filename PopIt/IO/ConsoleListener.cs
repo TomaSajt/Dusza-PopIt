@@ -1,6 +1,7 @@
-﻿namespace PopIt.IO;
-using static PopIt.IO.NativeMethods;
-internal static class ConsoleListener
+﻿using static PopIt.IO.NativeMethods;
+
+namespace PopIt.IO;
+static class ConsoleListener
 {
     #region Events
 
@@ -19,48 +20,55 @@ internal static class ConsoleListener
 
     #endregion
 
-    private static bool Started = false;
-
-    public static void Setup()
+    private static bool Running = false;
+    private static uint savedMode = 0;
+    public static void Run()
     {
+        if (Running) return;
+        Running = true;
+
         IntPtr inHandle = GetStdHandle(STD_INPUT_HANDLE);
         uint mode = 0;
         GetConsoleMode(inHandle, ref mode);
+        savedMode = mode;
         // Ki kell kapcsolni a kijelölés módot, hogy ne írja felül a sima kattintás Eventet
         mode &= ~ENABLE_QUICK_EDIT_MODE;
         mode |= ENABLE_MOUSE_INPUT;
         SetConsoleMode(inHandle, mode);
-    }
-    public static void Start()
-    {
-        if (Started) return;
-        Started = true;
+
+
         IntPtr handleIn = GetStdHandle(STD_INPUT_HANDLE);
         new Thread(() =>
         {
             while (true)
             {
                 uint numRead = 0;
-                INPUT_RECORD[] record = new INPUT_RECORD[1];
-                record[0] = new INPUT_RECORD();
+                INPUT_RECORD[] record = { new INPUT_RECORD() };
                 ReadConsoleInput(handleIn, record, 1, ref numRead);
-                if (!Started)
+                if (!Running)
                 {
                     uint numWritten = 0;
                     WriteConsoleInput(handleIn, record, 1, ref numWritten);
                     return;
                 }
-                if (record[0].EventType == INPUT_RECORD.MOUSE_EVENT)
+                switch (record[0].EventType)
                 {
-                    MouseEvent?.Invoke(record[0].MouseEvent);
-                }
-                if (record[0].EventType == INPUT_RECORD.WINDOW_BUFFER_SIZE_EVENT)
-                {
-                    ConsoleWindowResizeEvent?.Invoke(record[0].WindowBufferSizeEvent);
+                    case INPUT_RECORD.MOUSE_EVENT:
+                        MouseEvent?.Invoke(record[0].MouseEvent);
+                        break;
+                    case INPUT_RECORD.WINDOW_BUFFER_SIZE_EVENT:
+                        ConsoleWindowResizeEvent?.Invoke(record[0].WindowBufferSizeEvent);
+                        break;
                 }
             }
         }).Start();
     }
-    public static void EndCapture() => Started = false;
+    public static void Stop()
+    {
+        Running = false;
+
+        IntPtr inHandle = GetStdHandle(STD_INPUT_HANDLE);
+        SetConsoleMode(inHandle, savedMode);
+    }
 }
 

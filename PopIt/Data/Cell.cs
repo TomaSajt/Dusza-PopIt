@@ -1,5 +1,5 @@
 ﻿namespace PopIt.Data;
-internal class Cell
+class Cell
 {
     public char Char { get; set; } = '.';
     public bool Pushed { get; private set; } = false;

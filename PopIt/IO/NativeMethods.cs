@@ -1,8 +1,8 @@
-﻿namespace PopIt.IO;
-using System.Runtime.InteropServices;
-internal static class NativeMethods
-{
+﻿using System.Runtime.InteropServices;
 
+namespace PopIt.IO;
+static class NativeMethods
+{
 #pragma warning disable CS0649
     public record struct COORD(short X, short Y);
 

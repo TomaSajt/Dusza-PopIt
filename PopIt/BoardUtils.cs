@@ -2,7 +2,7 @@
 using PopIt.Exception;
 
 namespace PopIt;
-static internal class BoardUtils
+static class BoardUtils
 {
     public static Board CreateFromFile(string path)
     {
@@ -20,6 +20,11 @@ static internal class BoardUtils
         }
         return board;
     }
+    /// <summary>
+    /// Saves the given board to a file with the given path
+    /// </summary>
+    /// <param name="board"></param>
+    /// <param name="path"></param>
     public static void SaveToFile(Board board, string path)
     {
         using var sw = new StreamWriter(path);
