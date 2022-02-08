@@ -38,7 +38,7 @@ _For more examples, please refer to the [Documentation](https://isze.hu/wp-conte
     - [ ] Output
         - [ ] New Board Visuals
             - [x] 4 color system
-            - [ ] use color codes instead of ConsoleColor
+            - [x] use color codes instead of ConsoleColor
             - [ ] new selection marker
     - [ ] Mixed
         - [ ] Option Prompts
