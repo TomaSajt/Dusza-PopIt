@@ -34,7 +34,7 @@ static class BoardUtils
             sw.WriteLine();
         }
     }
-    public static bool ValidateBoard(Board board)
+    public static bool CheckComponentsNotBroken(Board board)
     {
         HashSet<char> seen = new();
         for (int i = 0; i < board.Width; i++)

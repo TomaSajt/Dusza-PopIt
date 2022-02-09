@@ -64,6 +64,7 @@ static class IOManager
     }
     public static void Stop()
     {
+        started = false;
         ConsoleListener.Stop();
         ClearEvents();
     }
