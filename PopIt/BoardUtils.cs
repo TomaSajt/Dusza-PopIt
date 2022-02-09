@@ -42,6 +42,7 @@ static class BoardUtils
             for (int j = 0; j < board.Height; j++)
             {
                 char ch = board[i, j].Char;
+                if (ch == '.') continue;
                 if (seen.Add(ch)) continue;
                 if (board.GetNeighboursAt(i, j).All(x => x.Char != ch)) return false;
             }
