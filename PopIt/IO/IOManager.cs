@@ -2,22 +2,33 @@
 static class IOManager
 {
     #region Events
-    public static event MouseEventData? LeftMouseDown = null;
-    public static event MouseEventData? LeftMouseUp = null;
-    public static event MouseEventData? RightMouseDown = null;
-    public static event MouseEventData? RightMouseUp = null;
-    public static event ResizeEventData? ResizeEvent = null;
+    public static event MouseEventData? LeftMouseDown;
+    public static event MouseEventData? LeftMouseUp;
+    public static event MouseEventData? RightMouseDown;
+    public static event MouseEventData? RightMouseUp;
+    public static event KeyEventData? KeyPressed;
+    public static event ResizeEventData? ResizeEvent;
     #endregion
     private static bool leftState = false;
     private static bool rightState = false;
     private static bool started = false;
+
+    static IOManager() => ClearEvents();
+    private static void ClearEvents()
+    {
+        LeftMouseDown = null;
+        LeftMouseUp = null;
+        RightMouseDown = null;
+        RightMouseUp = null;
+        KeyPressed = null;
+        ResizeEvent = null;
+    }
     public static void Run()
     {
         if (started) return;
         started = true;
 
         ConsoleListener.Run();
-
         ConsoleListener.MouseEvent += e =>
         {
             {
@@ -39,16 +50,24 @@ static class IOManager
                 rightState = newState;
             }
         };
-        ConsoleListener.ConsoleWindowResizeEvent += e => ResizeEvent?.Invoke(e.dwSize.X, e.dwSize.Y);
+
+
+
+        ConsoleListener.KeyEvent += e =>
+        {
+            if (e.bKeyDown)
+            {
+                KeyPressed?.Invoke((ConsoleKey)e.wVirtualKeyCode);
+            }
+        };
+        ConsoleListener.WindowResizeEvent += e => ResizeEvent?.Invoke(e.dwSize.X, e.dwSize.Y);
     }
     public static void Stop()
     {
         ConsoleListener.Stop();
-        LeftMouseDown = null;
-        LeftMouseUp = null;
-        RightMouseDown = null;
-        RightMouseUp = null;
+        ClearEvents();
     }
     public delegate void MouseEventData(short x, short y);
+    public delegate void KeyEventData(ConsoleKey key);
     public delegate void ResizeEventData(short w, short h);
 }
