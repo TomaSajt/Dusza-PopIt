@@ -54,6 +54,7 @@ class Game
     }
     public void Run()
     {
+        IOManager.Run();
         Console.CursorVisible = false;
         Render();
         IOManager.KeyPressed += HandleInput;
@@ -106,6 +107,7 @@ class Game
         IOManager.KeyPressed -= HandleInput;
         Console.Clear();
         Console.WriteLine($"Gratulálok {CurrentPlayer}. játékos, győztél!");
+        IOManager.Stop();
         Console.ReadKey();
         Return = true;
     }

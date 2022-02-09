@@ -30,7 +30,7 @@ static class BoardUtils
         using var sw = new StreamWriter(path);
         for (int i = 0; i < board.Height; i++)
         {
-            for (int j = 0; j < board.Width; j++) sw.Write(board[j, i]);
+            for (int j = 0; j < board.Width; j++) sw.Write(board[j, i].Char);
             sw.WriteLine();
         }
     }
