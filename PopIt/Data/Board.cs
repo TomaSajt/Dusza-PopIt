@@ -16,7 +16,7 @@ class Board
         {
             for (int j = 0; j < Height; j++)
             {
-                cells[i, j] = new();
+                cells[i, j] = new(this);
             }
         }
     }
