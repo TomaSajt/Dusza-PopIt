@@ -20,8 +20,37 @@ class Game
         if (!BoardUtils.ValidateBoard(CurrentBoard)) throw new InvalidBoardFormatException("The board cannot contain the same letter in a different component");
         colorMap = BoardUtils.CreateColorMap(CurrentBoard, colorPairs);
     }
+    public void Run()
+    {
+        Console.CursorVisible = false;
+        while (true)
+        {
+            HandleInput();
+            Render();
+        }
+    }
+    public void HandleInput()
+    {
+        var key = Console.ReadKey().Key;
+        switch (key)
+        {
+            case ConsoleKey.W:
+            case ConsoleKey.UpArrow:
+                break;
+            case ConsoleKey.A:
+            case ConsoleKey.LeftArrow:
+                break;
+            case ConsoleKey.S:
+            case ConsoleKey.DownArrow:
+                break;
+            case ConsoleKey.D:
+            case ConsoleKey.RightArrow:
+                break;
+        }
+    }
     public void Render()
     {
+        Console.Clear();
         StringBuilder sb = new();
         for (int i = 0; i < CurrentBoard.Height; i++)
         {
@@ -37,6 +66,7 @@ class Game
         Console.Write(sb);
 
     }
-    
-    
+
+
+
 }
