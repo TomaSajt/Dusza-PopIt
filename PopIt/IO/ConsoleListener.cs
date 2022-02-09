@@ -5,8 +5,9 @@ static class ConsoleListener
 {
     #region Events
 
-    public static event ConsoleMouseEvent? MouseEvent = null;
-    public static event ConsoleWindowBufferSizeEvent? ConsoleWindowResizeEvent = null;
+    public static event ConsoleMouseEvent? MouseEvent;
+    public static event ConsoleKeyEvent? KeyEvent;
+    public static event ConsoleWindowBufferSizeEvent? WindowResizeEvent;
 
     #endregion
 
@@ -19,6 +20,14 @@ static class ConsoleListener
     public delegate void ConsoleWindowBufferSizeEvent(WINDOW_BUFFER_SIZE_RECORD r);
 
     #endregion
+
+    static ConsoleListener() => ClearEvents();
+    private static void ClearEvents()
+    {
+        MouseEvent = null;
+        KeyEvent = null;
+        WindowResizeEvent = null;
+    }
 
     private static bool Running = false;
     private static uint savedMode = 0;
@@ -56,8 +65,11 @@ static class ConsoleListener
                     case INPUT_RECORD.MOUSE_EVENT:
                         MouseEvent?.Invoke(record[0].MouseEvent);
                         break;
+                    case INPUT_RECORD.KEY_EVENT:
+                        KeyEvent?.Invoke(record[0].KeyEvent);
+                        break;
                     case INPUT_RECORD.WINDOW_BUFFER_SIZE_EVENT:
-                        ConsoleWindowResizeEvent?.Invoke(record[0].WindowBufferSizeEvent);
+                        WindowResizeEvent?.Invoke(record[0].WindowBufferSizeEvent);
                         break;
                 }
             }
@@ -66,6 +78,9 @@ static class ConsoleListener
     public static void Stop()
     {
         Running = false;
+        MouseEvent = null;
+        KeyEvent = null;
+        WindowResizeEvent = null;
 
         IntPtr inHandle = GetStdHandle(STD_INPUT_HANDLE);
         SetConsoleMode(inHandle, savedMode);

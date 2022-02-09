@@ -4,6 +4,7 @@ using PopIt.Exception;
 namespace PopIt;
 static class BoardUtils
 {
+    private static readonly Random rand = new();
     public static Board CreateFromFile(string path)
     {
         var lines = File.ReadAllLines(path);
@@ -30,11 +31,11 @@ static class BoardUtils
         using var sw = new StreamWriter(path);
         for (int i = 0; i < board.Height; i++)
         {
-            for (int j = 0; j < board.Width; j++) sw.Write(board[j, i]);
+            for (int j = 0; j < board.Width; j++) sw.Write(board[j, i].Char);
             sw.WriteLine();
         }
     }
-    public static bool ValidateBoard(Board board)
+    public static bool CheckComponentsNotBroken(Board board)
     {
         HashSet<char> seen = new();
         for (int i = 0; i < board.Width; i++)
@@ -42,6 +43,7 @@ static class BoardUtils
             for (int j = 0; j < board.Height; j++)
             {
                 char ch = board[i, j].Char;
+                if (ch == '.') continue;
                 if (seen.Add(ch)) continue;
                 if (board.GetNeighboursAt(i, j).All(x => x.Char != ch)) return false;
             }
@@ -69,6 +71,7 @@ static class BoardUtils
     }
     public static Dictionary<char, int> GetMColoring(Dictionary<char, HashSet<char>> graph, int m)
     {
+
         Dictionary<char, int> colors = new();
         char[] chars = graph.Keys.ToArray();
         foreach (char ch in graph.Keys) colors.Add(ch, -1);
@@ -82,7 +85,7 @@ static class BoardUtils
                 return true;
 
             // Try different colors for vertex V
-            for (int i = 0; i < m; i++)
+            foreach (int i in Enumerable.Range(0,m).OrderBy(x=> rand.Next()))
             {
                 // check for assignment safety
                 if (IsSafeToColor(chars[v], graph, i))
