@@ -6,6 +6,7 @@ static class IOManager
     public static event MouseEventData? LeftMouseUp = null;
     public static event MouseEventData? RightMouseDown = null;
     public static event MouseEventData? RightMouseUp = null;
+    public static event MouseEventData? MouseMove = null;
     public static event ResizeEventData? ResizeEvent = null;
     #endregion
     private static bool leftState = false;
@@ -26,6 +27,7 @@ static class IOManager
                 {
                     if (newState) LeftMouseDown?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
                     else LeftMouseUp?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
+                    return;
                 }
                 leftState = newState;
             }
@@ -35,9 +37,11 @@ static class IOManager
                 {
                     if (newState) RightMouseDown?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
                     else RightMouseUp?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
+                    return;
                 }
                 rightState = newState;
             }
+            MouseMove?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
         };
         ConsoleListener.ConsoleWindowResizeEvent += e => ResizeEvent?.Invoke(e.dwSize.X, e.dwSize.Y);
     }
