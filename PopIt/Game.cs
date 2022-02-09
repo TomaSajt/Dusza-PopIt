@@ -13,7 +13,6 @@ class Game
     public int RemainingCells { get; private set; }
     private Board Board { get; set; }
     private Point CursorPosition { get; set; }
-    private Cell HoveredCell { get => Board[CursorPosition.X, CursorPosition.Y]; }
     private bool Selecting { get; set; } = false;
     private bool Return { get; set; } = false;
     public void NextPlayer() => CurrentPlayer = CurrentPlayer % PlayerCount + 1;
@@ -57,10 +56,27 @@ class Game
         IOManager.Run();
         Console.CursorVisible = false;
         Render();
-        IOManager.KeyPressed += HandleInput;
+        IOManager.KeyPressed += HandleKeyboardInput;
+        IOManager.LeftMouseDown += HandleMouseClcik;
         while (!Return) { }
     }
-    public void HandleInput(ConsoleKey key)
+    public void HandleMouseClcik(short x, short y)
+    {
+        x /= 2;
+        if (IsValidPosition(x, y))
+        {
+            if (!Selecting || IsNeighbourPushedNowWithSameColor(x, y))
+            {
+                if (Board[x, y].Pushed) return;
+                Selecting = true;
+                RemainingCells--;
+                Board[x, y].Push();
+                CursorPosition = new(x, y);
+                Render();
+            }
+        }
+    }
+    public void HandleKeyboardInput(ConsoleKey key)
     {
         int X = CursorPosition.X, Y = CursorPosition.Y;
 
@@ -80,10 +96,10 @@ class Game
 
                 break;
             case ConsoleKey.Spacebar:
-                if (HoveredCell.Pushed) return;
+                if (Board[CursorPosition.X, CursorPosition.Y].Pushed) return;
                 Selecting = true;
                 RemainingCells--;
-                HoveredCell.Push();
+                Board[CursorPosition.X, CursorPosition.Y].Push();
                 break;
             case ConsoleKey.A or ConsoleKey.LeftArrow:
                 if (CanStepToFrom(X, Y, X - 1, Y)) X--;
@@ -104,7 +120,7 @@ class Game
 
     private void HandleWin()
     {
-        IOManager.KeyPressed -= HandleInput;
+        IOManager.KeyPressed -= HandleKeyboardInput;
         Console.Clear();
         Console.WriteLine($"Gratulálok {CurrentPlayer}. játékos, győztél!");
         IOManager.Stop();
@@ -143,6 +159,13 @@ class Game
         (IsValidPosition(x - 1, y) && Board[x - 1, y].PushedNow) ||
         (IsValidPosition(x, y + 1) && Board[x, y + 1].PushedNow) ||
         (IsValidPosition(x, y - 1) && Board[x, y - 1].PushedNow);
+    bool IsNeighbourPushedNowWithSameColor(int x, int y) =>
+        IsValidPosition(x, y) && (
+            (IsValidPosition(x + 1, y) && Board[x + 1, y].PushedNow && Board[x, y].Char == Board[x + 1, y].Char) ||
+            (IsValidPosition(x - 1, y) && Board[x - 1, y].PushedNow && Board[x, y].Char == Board[x - 1, y].Char) ||
+            (IsValidPosition(x, y + 1) && Board[x, y + 1].PushedNow && Board[x, y].Char == Board[x, y + 1].Char) ||
+            (IsValidPosition(x, y - 1) && Board[x, y - 1].PushedNow && Board[x, y].Char == Board[x, y - 1].Char)
+        );
     bool CanStepToFrom(int fx, int fy, int tx, int ty) => IsValidPosition(tx, ty) && (!Selecting || (Board[fx, fy].Char == Board[tx, ty].Char && !Board[tx, ty].PushedBefore && IsNeighbourOrSelfPushedNow(tx, ty)));
     bool IsValidPosition(int x, int y) => x >= 0 && y >= 0 && x < Board.Width && y < Board.Height && Board[x, y].Char != '.';
 
