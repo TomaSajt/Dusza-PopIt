@@ -9,24 +9,30 @@ class Game
     private readonly ColorPair[] colorPairs = { ColorPair.Blue, ColorPair.Red, ColorPair.Green, ColorPair.Yellow };
     private readonly Dictionary<char, ColorPair> colorMap;
     public int PlayerCount { get; private set; }
-    public int CurrentPlayer { get; private set; } = 1;
+    public int CurrentPlayer { get; private set; }
     public int RemainingCells { get; private set; }
     private Board Board { get; set; }
     private Point CursorPosition { get; set; }
-    private bool Selecting { get; set; } = false;
-    private bool Return { get; set; } = false;
+    private bool Selecting { get; set; }
+    private bool Release { get; set; }
     public void NextPlayer() => CurrentPlayer = CurrentPlayer % PlayerCount + 1;
 
     public Game(string boardPath, int playerCount = 2) : this(BoardUtils.CreateFromFile(boardPath), playerCount) { }
     public Game(Board board, int playerCount = 2)
     {
         if (playerCount == 0) throw new ArgumentException($"Value of {nameof(playerCount)} cannot be less than 1.");
+
         PlayerCount = playerCount;
+        CurrentPlayer = 1;
         Board = board;
         if (!BoardUtils.CheckComponentsNotBroken(Board)) throw new InvalidBoardFormatException("The board cannot contain the same letter in a different, not connected component");
+        //TODO: Validate whether or not every cell is reachable from every other point
+
         colorMap = BoardUtils.CreateColorMap(Board, colorPairs);
         CursorPosition = FindFirstValidPos();
         RemainingCells = CountCells();
+        Selecting = false;
+        Release = false;
     }
     private int CountCells()
     {
@@ -58,23 +64,16 @@ class Game
         Render();
         IOManager.KeyPressed += HandleKeyboardInput;
         IOManager.LeftMouseDown += HandleMouseClcik;
-        while (!Return) { }
+        while (!Release) { }
     }
     public void HandleMouseClcik(short x, short y)
     {
         x /= 2;
-        if (IsValidPosition(x, y))
-        {
-            if (!Selecting || IsNeighbourPushedNowWithSameColor(x, y))
-            {
-                if (Board[x, y].Pushed) return;
-                Selecting = true;
-                RemainingCells--;
-                Board[x, y].Push();
-                CursorPosition = new(x, y);
-                Render();
-            }
-        }
+        if (!IsValidPosition(x, y)) return;
+        if (Selecting && !IsNeighbourPushedNowWithSameColor(x, y)) return;
+        if (!TryPush(x, y)) return;
+        CursorPosition = new(x, y);
+        Render();
     }
     public void HandleKeyboardInput(ConsoleKey key)
     {
@@ -84,22 +83,10 @@ class Game
         switch (key)
         {
             case ConsoleKey.Enter:
-                if (!Selecting) return;
-                Board.ResetPushedNow();
-                Selecting = false;
-                NextPlayer();
-                if (RemainingCells == 0)
-                {
-                    HandleWin();
-                    return;
-                }
-
+                if (!TrySubmit()) return;
                 break;
             case ConsoleKey.Spacebar:
-                if (Board[CursorPosition.X, CursorPosition.Y].Pushed) return;
-                Selecting = true;
-                RemainingCells--;
-                Board[CursorPosition.X, CursorPosition.Y].Push();
+                if (!TryPush(CursorPosition.X, CursorPosition.Y)) return;
                 break;
             case ConsoleKey.A or ConsoleKey.LeftArrow:
                 if (CanStepToFrom(X, Y, X - 1, Y)) X--;
@@ -113,9 +100,33 @@ class Game
             case ConsoleKey.S or ConsoleKey.DownArrow:
                 if (CanStepToFrom(X, Y, X, Y + 1)) Y++;
                 break;
+            default:
+                return;
         }
         CursorPosition = new(X, Y);
         Render();
+    }
+
+    private bool TrySubmit()
+    {
+        if (!Selecting) return false;
+        Board.ResetPushedNow();
+        Selecting = false;
+        NextPlayer();
+        if (RemainingCells == 0)
+        {
+            HandleWin();
+            return false;
+        }
+        return true;
+    }
+    private bool TryPush(int x, int y)
+    {
+        if (Board[x, y].Pushed) return false;
+        Selecting = true;
+        RemainingCells--;
+        Board[x, y].Push();
+        return true;
     }
 
     private void HandleWin()
@@ -125,7 +136,7 @@ class Game
         Console.WriteLine($"Gratulálok {CurrentPlayer}. játékos, győztél!");
         IOManager.Stop();
         Console.ReadKey();
-        Return = true;
+        Release = true;
     }
 
     public void Render()
@@ -142,8 +153,9 @@ class Game
         }
         sb.Append(ConsoleCodes.RESET);
         Console.Write(sb);
+        Console.WriteLine();
+        Console.WriteLine($"{CurrentPlayer}. játékos");
         Console.WriteLine(CursorPosition);
-        Console.WriteLine(CurrentPlayer);
     }
     public string GetCellTextAt(int x, int y)
     {
