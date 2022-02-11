@@ -16,7 +16,7 @@ class Board
         {
             for (int j = 0; j < Height; j++)
             {
-                cells[i, j] = new(this);
+                cells[i, j] = new();
             }
         }
     }
@@ -62,11 +62,5 @@ class Board
             sw.WriteLine();
         }
     }
-
-    public bool IsSolved()
-    {
-        return false;
-    }
-
 
 }
