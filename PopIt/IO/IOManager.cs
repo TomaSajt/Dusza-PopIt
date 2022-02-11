@@ -12,6 +12,7 @@ static class IOManager
     private static bool leftState = false;
     private static bool rightState = false;
     private static bool started = false;
+    private static int prevX = -1, prevY = -1;
     public static void Run()
     {
         if (started) return;
@@ -22,12 +23,19 @@ static class IOManager
         ConsoleListener.MouseEvent += e =>
         {
             {
+                if(e.dwMousePosition.X != prevX || e.dwMousePosition.Y != prevY)
+                {
+                    MouseMove?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
+                }
+                prevX = e.dwMousePosition.X;
+                prevY = e.dwMousePosition.Y;
+            }
+            {
                 bool newState = (e.dwButtonState & NativeMethods.MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED) == NativeMethods.MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED;
                 if (newState != leftState)
                 {
                     if (newState) LeftMouseDown?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
                     else LeftMouseUp?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
-                    return;
                 }
                 leftState = newState;
             }
@@ -37,11 +45,9 @@ static class IOManager
                 {
                     if (newState) RightMouseDown?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
                     else RightMouseUp?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
-                    return;
                 }
                 rightState = newState;
             }
-            MouseMove?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
         };
         ConsoleListener.ConsoleWindowResizeEvent += e => ResizeEvent?.Invoke(e.dwSize.X, e.dwSize.Y);
     }
@@ -53,6 +59,6 @@ static class IOManager
         RightMouseDown = null;
         RightMouseUp = null;
     }
-    public delegate void MouseEventData(short x, short y);
-    public delegate void ResizeEventData(short w, short h);
+    public delegate void MouseEventData(int x, int y);
+    public delegate void ResizeEventData(int w, int h);
 }
