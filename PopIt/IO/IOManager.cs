@@ -8,6 +8,7 @@ static class IOManager
     public static event MouseEventData? RightMouseUp;
     public static event KeyEventData? KeyPressed;
     public static event ResizeEventData? ResizeEvent;
+    public static event MouseEventData? MouseMove;
     #endregion
     private static bool leftState = false;
     private static bool rightState = false;
@@ -22,6 +23,7 @@ static class IOManager
         RightMouseUp = null;
         KeyPressed = null;
         ResizeEvent = null;
+        MouseMove = null;
     }
     public static void Run()
     {
@@ -31,6 +33,14 @@ static class IOManager
         ConsoleListener.Run();
         ConsoleListener.MouseEvent += e =>
         {
+            {
+                if(e.dwMousePosition.X != prevX || e.dwMousePosition.Y != prevY)
+                {
+                    MouseMove?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
+                }
+                prevX = e.dwMousePosition.X;
+                prevY = e.dwMousePosition.Y;
+            }
             {
                 bool newState = (e.dwButtonState & NativeMethods.MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED) == NativeMethods.MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED;
                 if (newState != leftState)
@@ -68,7 +78,7 @@ static class IOManager
         ConsoleListener.Stop();
         ClearEvents();
     }
-    public delegate void MouseEventData(short x, short y);
+    public delegate void MouseEventData(int x, int y);
+    public delegate void ResizeEventData(int w, int h);
     public delegate void KeyEventData(ConsoleKey key);
-    public delegate void ResizeEventData(short w, short h);
 }
