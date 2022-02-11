@@ -7,7 +7,7 @@ namespace PopIt.UI
     internal class UIElement
     {
         public Rectangle Region { get; protected set; }
-        public UIElement? Parent { get; protected set; }
+        public UIElement? Parent { get; private set; }
         public List<UIElement> Children { get; } = new();
         private bool mouseContained = false;
 
