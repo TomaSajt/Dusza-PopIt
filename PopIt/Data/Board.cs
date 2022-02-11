@@ -27,6 +27,9 @@ class Board
         if (x < Width - 1) yield return this[x + 1, y];
         if (y < Height - 1) yield return this[x, y + 1];
     }
+    /// <summary>
+    /// Utility function, which iterates through every cell, and resets their <see cref="F:Cell.PushedNow"/> state.
+    /// </summary>
     public void ResetPushedNow()
     {
         for (int i = 0; i < Width; i++)
@@ -37,6 +40,12 @@ class Board
             }
         }
     }
+    /// <summary>
+    /// Loads a <c>Board</c> from the given path.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns>The read board from the file</returns>
+    /// <exception cref="InvalidBoardFormatException"></exception>
     public static Board CreateFromFile(string path)
     {
         var lines = File.ReadAllLines(path);
@@ -53,12 +62,16 @@ class Board
         }
         return board;
     }
+    /// <summary>
+    /// Saves the board to a file with the given path. Might throw an exception if the file is not accessible.
+    /// </summary>
+    /// <param name="path">The path to the file</param>
     public void SaveToFile(string path)
     {
         using var sw = new StreamWriter(path);
         for (int i = 0; i < Height; i++)
         {
-            for (int j = 0; j < Width; j++) sw.Write(this[j, i]);
+            for (int j = 0; j < Width; j++) sw.Write(this[j, i].Char);
             sw.WriteLine();
         }
     }

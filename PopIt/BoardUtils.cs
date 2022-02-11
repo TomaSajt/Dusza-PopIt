@@ -5,36 +5,6 @@ namespace PopIt;
 static class BoardUtils
 {
     private static readonly Random rand = new();
-    public static Board CreateFromFile(string path)
-    {
-        var lines = File.ReadAllLines(path);
-        var height = lines.Length;
-        var width = lines[0].Length;
-        if (lines.Any(x => x.Length != width)) throw new InvalidBoardFormatException("The board was not rectangular");
-        var board = new Board(width, height);
-        for (int i = 0; i < lines.Length; i++)
-        {
-            for (int j = 0; j < width; j++)
-            {
-                board[j, i].Char = lines[i][j];
-            }
-        }
-        return board;
-    }
-    /// <summary>
-    /// Saves the given board to a file with the given path
-    /// </summary>
-    /// <param name="board"></param>
-    /// <param name="path"></param>
-    public static void SaveToFile(Board board, string path)
-    {
-        using var sw = new StreamWriter(path);
-        for (int i = 0; i < board.Height; i++)
-        {
-            for (int j = 0; j < board.Width; j++) sw.Write(board[j, i].Char);
-            sw.WriteLine();
-        }
-    }
     public static bool CheckComponentsNotBroken(Board board)
     {
         HashSet<char> seen = new();

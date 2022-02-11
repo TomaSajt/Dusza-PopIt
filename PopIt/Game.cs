@@ -17,8 +17,8 @@ class Game
     private bool Release { get; set; }
     public void NextPlayer() => CurrentPlayer = CurrentPlayer % PlayerCount + 1;
 
-    public Game(string boardPath, int playerCount = 2) : this(BoardUtils.CreateFromFile(boardPath), playerCount) { }
-    public Game(Board board, int playerCount = 2)
+    public Game(string boardPath, int playerCount) : this(BoardUtils.CreateFromFile(boardPath), playerCount) { }
+    public Game(Board board, int playerCount)
     {
         if (playerCount == 0) throw new ArgumentException($"Value of {nameof(playerCount)} cannot be less than 1.");
 
@@ -34,18 +34,12 @@ class Game
         Selecting = false;
         Release = false;
     }
-    private int CountCells()
-    {
-        int count = 0;
-        for (int i = 0; i < Board.Width; i++)
-        {
-            for (int j = 0; j < Board.Height; j++)
-            {
-                if (Board[i, j].Char != '.') count++;
-            }
-        }
-        return count;
-    }
+    
+    /// <summary>
+    /// Finds the first valid position for the cursor. This function scans from top-to-bottom left-to-right.
+    /// </summary>
+    /// <returns>A <see cref="Point"></see> with the coordinates</returns>
+    /// <exception cref="InvalidBoardFormatException"></exception>
     private Point FindFirstValidPos()
     {
         for (int i = 0; i < Board.Width; i++)
@@ -57,6 +51,9 @@ class Game
         }
         throw new InvalidBoardFormatException("The board has to contain at least 1 valid cell");
     }
+    /// <summary>
+    /// Starts the game, which locks the thread until the game is over
+    /// </summary>
     public void Run()
     {
         IOManager.Run();
@@ -65,6 +62,8 @@ class Game
         IOManager.KeyPressed += HandleKeyboardInput;
         IOManager.LeftMouseDown += HandleMouseClcik;
         while (!Release) { }
+        IOManager.Stop();
+        Console.ReadKey();
     }
     public void HandleMouseClcik(short x, short y)
     {
@@ -134,8 +133,6 @@ class Game
         IOManager.KeyPressed -= HandleKeyboardInput;
         Console.Clear();
         Console.WriteLine($"Gratulálok {CurrentPlayer}. játékos, győztél!");
-        IOManager.Stop();
-        Console.ReadKey();
         Release = true;
     }
 

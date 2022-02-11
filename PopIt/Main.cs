@@ -21,7 +21,7 @@ do
         case 1:
             Console.Clear();
             Console.WriteLine("Add meg a pálya számát:");
-            new Game($"palya{ReadInt()}.txt", 2).Run();
+            new Game($"palya{ReadInt()}.txt", 3).Run();
             break;
         case 2:
             Console.Clear();
@@ -35,7 +35,7 @@ do
             board[2, 4].Char = 'a';
             Console.WriteLine("Mi legyen a pálya sorszáma? (későbbi betöltéshez)");
             BoardUtils.SaveToFile(board, $"palya{ReadInt()}.txt");
-            new Game(board).Run();
+            new Game(board, 3).Run();
             break;
         case 3:
             exit = true;
