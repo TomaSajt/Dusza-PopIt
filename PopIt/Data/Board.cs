@@ -40,6 +40,20 @@ class Board
             }
         }
     }
+
+    public int CountCells()
+    {
+        int count = 0;
+        for (int i = 0; i < Width; i++)
+        {
+            for (int j = 0; j < Height; j++)
+            {
+                if (this[i, j].Char != ' ') count++;
+            }
+        }
+        return count;
+    }
+
     /// <summary>
     /// Loads a <c>Board</c> from the given path.
     /// </summary>

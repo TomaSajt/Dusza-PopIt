@@ -34,7 +34,7 @@ do
             board[2, 3].Char = 'a';
             board[2, 4].Char = 'a';
             Console.WriteLine("Mi legyen a pálya sorszáma? (későbbi betöltéshez)");
-            BoardUtils.SaveToFile(board, $"palya{ReadInt()}.txt");
+            board.SaveToFile($"palya{ReadInt()}.txt");
             new Game(board, 3).Run();
             break;
         case 3:

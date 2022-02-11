@@ -17,7 +17,7 @@ class Game
     private bool Release { get; set; }
     public void NextPlayer() => CurrentPlayer = CurrentPlayer % PlayerCount + 1;
 
-    public Game(string boardPath, int playerCount) : this(BoardUtils.CreateFromFile(boardPath), playerCount) { }
+    public Game(string boardPath, int playerCount) : this(Board.CreateFromFile(boardPath), playerCount) { }
     public Game(Board board, int playerCount)
     {
         if (playerCount == 0) throw new ArgumentException($"Value of {nameof(playerCount)} cannot be less than 1.");
@@ -30,7 +30,7 @@ class Game
 
         colorMap = BoardUtils.CreateColorMap(Board, colorPairs);
         CursorPosition = FindFirstValidPos();
-        RemainingCells = CountCells();
+        RemainingCells = board.CountCells();
         Selecting = false;
         Release = false;
     }
@@ -65,7 +65,7 @@ class Game
         IOManager.Stop();
         Console.ReadKey();
     }
-    public void HandleMouseClcik(short x, short y)
+    public void HandleMouseClcik(int x, int y)
     {
         x /= 2;
         if (!IsValidPosition(x, y)) return;

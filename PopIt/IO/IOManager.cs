@@ -13,6 +13,7 @@ static class IOManager
     private static bool leftState = false;
     private static bool rightState = false;
     private static bool started = false;
+    private static int prevX = -1, prevY = -1;
 
     static IOManager() => ClearEvents();
     private static void ClearEvents()
