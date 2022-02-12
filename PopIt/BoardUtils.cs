@@ -20,7 +20,7 @@ static class BoardUtils
         var lines = File.ReadAllLines(path);
         var height = lines.Length;
         var width = lines[0].Length;
-        if (lines.Any(x => x.Length != width)) throw new InvalidBoardFormatException("The board was not rectangular");
+        if (lines.Any(x => x.Length != width)) throw new InvalidBoardFormatException("The read board was not rectangular");
         var board = new Board(width, height);
         for (int i = 0; i < lines.Length; i++)
         {
@@ -86,6 +86,15 @@ static class BoardUtils
 
     }
 
+    public static IEnumerable<Point> GetNeighboursPositions(Board board, int x, int y)
+    {
+        if (x > 0) yield return new(x - 1, y);
+        if (y > 0) yield return new(x, y - 1);
+        if (x < board.Width - 1) yield return new(x + 1, y);
+        if (y < board.Height - 1) yield return new(x, y + 1);
+    }
+    public static IEnumerable<Cell> GetNeighboursAt(Board board, int x, int y) => GetNeighboursPositions(board, x, y).Select(p => board[p.X, p.Y]);
+
     /// <summary>
     /// Checks whether or not there are any dijoint components in the given <see cref="Board"/>.
     /// </summary>
@@ -94,17 +103,36 @@ static class BoardUtils
     public static bool CheckComponentsNotBroken(Board board)
     {
         HashSet<char> seen = new();
+        var vis = new bool[board.Width, board.Height];
         for (int i = 0; i < board.Width; i++)
         {
             for (int j = 0; j < board.Height; j++)
             {
                 char ch = board[i, j].Char;
-                if (ch == '.') continue;
-                if (seen.Add(ch)) continue;
-                if (board.GetNeighboursAt(i, j).All(x => x.Char != ch)) return false;
-                //TODO: fix check with BFS
+                if (vis[i, j] || ch == '.') continue;
+                if (seen.Contains(ch)) return false;
+                seen.Add(ch);
+                FillFrom(i, j);
             }
         }
+        void FillFrom(int x, int y)
+        {
+            Queue<Point> queue = new Queue<Point>();
+            queue.Enqueue(new(x, y));
+            char ch = board[x, y].Char;
+            vis[x, y] = true;
+            while (queue.Any())
+            {
+                var curr = queue.Dequeue();
+                foreach (var nei in GetNeighboursPositions(board, curr.X, curr.Y))
+                {
+                    if (board[nei.X, nei.Y].Char != ch || vis[nei.X, nei.Y]) continue;
+                    vis[nei.X, nei.Y] = true;
+                    queue.Enqueue(nei);
+                }
+            }
+        }
+
         return true;
     }
     /// <summary>
@@ -123,7 +151,7 @@ static class BoardUtils
                 char ch = board[i, j].Char;
                 if (ch == '.') continue;
                 if (!adjDict.ContainsKey(ch)) adjDict.Add(ch, new());
-                foreach (var nei in board.GetNeighboursAt(i, j))
+                foreach (var nei in GetNeighboursAt(board, i, j))
                 {
                     if (nei.Char == '.' || nei.Char == ch) continue;
                     adjDict[ch].Add(nei.Char);

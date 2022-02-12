@@ -20,15 +20,8 @@ class Board
             }
         }
     }
-    public IEnumerable<Cell> GetNeighboursAt(int x, int y)
-    {
-        if (x > 0) yield return this[x - 1, y];
-        if (y > 0) yield return this[x, y - 1];
-        if (x < Width - 1) yield return this[x + 1, y];
-        if (y < Height - 1) yield return this[x, y + 1];
-    }
     /// <summary>
-    /// Utility function, which iterates through every cell, and resets their <see cref="F:Cell.PushedNow"/> state.
+    /// Utility function, which iterates through every cell, and resets their PushedNow state.
     /// </summary>
     public void ResetPushedNow()
     {
