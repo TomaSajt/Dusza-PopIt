@@ -2,14 +2,18 @@
 using PopIt.Exception;
 
 namespace PopIt;
+
+/// <summary>
+/// An utility class which has useful functions for working with <see cref="Board"/>s.
+/// </summary>
 static class BoardUtils
 {
     private static readonly Random rand = new();
     /// <summary>
-    /// Loads a <c>Board</c> from the given path.
+    /// Loads a <see cref="Board"/> from the given path.
     /// </summary>
     /// <param name="path"></param>
-    /// <returns>The read board from the file</returns>
+    /// <returns>The <see cref="Board"/> read from the file</returns>
     /// <exception cref="InvalidBoardFormatException"></exception>
     public static Board CreateFromFile(string path)
     {
@@ -73,7 +77,7 @@ static class BoardUtils
                         board[nx, ny].Char = c;
                         next = true;
                     }
-                    if(next )c++;
+                    if (next) c++;
                 }
             }
             if (c <= 'z') return board;
@@ -82,8 +86,11 @@ static class BoardUtils
 
     }
 
-
-
+    /// <summary>
+    /// Checks whether or not there are any dijoint components in the given <see cref="Board"/>.
+    /// </summary>
+    /// <param name="board">The board to check</param>
+    /// <returns></returns>
     public static bool CheckComponentsNotBroken(Board board)
     {
         HashSet<char> seen = new();
@@ -95,10 +102,17 @@ static class BoardUtils
                 if (ch == '.') continue;
                 if (seen.Add(ch)) continue;
                 if (board.GetNeighboursAt(i, j).All(x => x.Char != ch)) return false;
+                //TODO: fix check with BFS
             }
         }
         return true;
     }
+    /// <summary>
+    /// Takes in a <see cref="Board"/> and returns a valid coloring using the given array of <see cref="ColorPair"/>s.
+    /// </summary>
+    /// <param name="board"></param>
+    /// <param name="colorPairs"></param>
+    /// <returns></returns>
     public static Dictionary<char, ColorPair> CreateColorMap(Board board, ColorPair[] colorPairs)
     {
         Dictionary<char, HashSet<char>> adjDict = new();
@@ -116,18 +130,27 @@ static class BoardUtils
                 }
             }
         }
-        return GetMColoring(adjDict, 4).ToDictionary(x => x.Key, x => colorPairs[x.Value]);
+        return GetMColoring(adjDict, colorPairs.Length).ToDictionary(x => x.Key, x => colorPairs[x.Value]);
     }
-    public static Dictionary<char, int> GetMColoring(Dictionary<char, HashSet<char>> graph, int m)
-    {
 
-        Dictionary<char, int> colors = new();
-        char[] chars = graph.Keys.ToArray();
-        foreach (char ch in graph.Keys) colors.Add(ch, -1);
+    /// <summary>
+    /// This function uses backtracking to create the m-coloring of an undirected graph.
+    /// </summary>
+    /// <typeparam name="T">The type of the graph nodes</typeparam>
+    /// <param name="graph">A graph in the form of an adjecency list</param>
+    /// <param name="m">The number of different colors to use</param>
+    /// <returns>A <see cref="Dictionary{T, int}"/>, which maps a node of the graph to a color index.</returns>
+    /// <exception cref="GraphColoringException"/>
+    public static Dictionary<T, int> GetMColoring<T, U>(Dictionary<T, U> graph, int m) where T : notnull where U : IEnumerable<T>
+    {
+        if (m < 4) throw new GraphColoringException($"{nameof(m)} cannot be less than 4");
+        Dictionary<T, int> colors = new();
+        T[] chars = graph.Keys.ToArray();
+        foreach (T ch in graph.Keys) colors.Add(ch, -1);
         if (!Backtrack(graph, 0)) throw new GraphColoringException($"Couldn't color graph with the {m} colors");
         return colors;
 
-        bool Backtrack(Dictionary<char, HashSet<char>> graph, int v)
+        bool Backtrack(Dictionary<T, U> graph, int v)
         {
             // If all vertices are assigned a color then return true
             if (v == chars.Length)
@@ -149,6 +172,6 @@ static class BoardUtils
             }
             return false;
         }
-        bool IsSafeToColor(char ch, Dictionary<char, HashSet<char>> graph, int col) => graph[ch].All(nei => colors[nei] != col);
+        bool IsSafeToColor(T ch, Dictionary<T, U> graph, int col) => graph[ch].All(nei => colors[nei] != col);
     }
 }
