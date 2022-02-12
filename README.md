@@ -31,20 +31,20 @@ _For more examples, please refer to the [Documentation](https://isze.hu/wp-conte
     - [ ] Input
         - [ ] Menu system
         - [ ] Buttons
-        - [ ] Arrow Controls
-        - [ ] Mouse Controls
+        - [x] Arrow Controls
+        - [x] Mouse Controls
             - [x] Detect mouse click
-            - [ ] Use mouse click
-    - [ ] Output
-        - [ ] New Board Visuals
+            - [x] Use mouse click
+    - [x] Output
+        - [x] New Board Visuals
             - [x] 4 color system
             - [x] use color codes instead of ConsoleColor
-            - [ ] new selection marker
+            - [x] new selection marker
     - [ ] Mixed
         - [ ] Option Prompts
 - [ ] Reimplement game
     - [x] Use Board class instead of multiple 2D matrices
-    - [ ] Game Logic
+    - [x] Game Logic
     - [ ] Board Generation
         - [x] 0 twists
         - [ ] n twists

@@ -32,13 +32,13 @@ static class BoardUtils
         return board;
     }
     /// <summary>
-    /// Saves the given board to a file with the given path. Might throw an exception if the file is not accessible.
+    /// Saves the given board to a file with the given path. Will override the file if it exists. Might throw an exception if the file is not accessible.
     /// </summary>
     /// <param name="board">The board to save</param>
     /// <param name="path">The path of the new file</param>
     public static void SaveToFile(Board board, string path)
     {
-        using var sw = new StreamWriter(path);
+        using var sw = new StreamWriter(path, false);
         for (int i = 0; i < board.Height; i++)
         {
             for (int j = 0; j < board.Width; j++) sw.Write(board[j, i].Char);

@@ -15,7 +15,7 @@ class Game : UIElement
     private Board Board { get; set; }
     private Point CursorPosition { get; set; }
     private bool Selecting { get; set; }
-    private bool Release { get; set; }
+    private bool ReleaseThread { get; set; }
     public void NextPlayer() => CurrentPlayer = CurrentPlayer % PlayerCount + 1;
 
     public Game(UIElement parent, int posX, int posY, string boardPath, int playerCount) : this(parent, posX, posY, BoardUtils.CreateFromFile(boardPath), playerCount) { }
@@ -33,7 +33,7 @@ class Game : UIElement
         CursorPosition = FindFirstValidPos();
         RemainingCells = board.CountCells();
         Selecting = false;
-        Release = false;
+        ReleaseThread = false;
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ class Game : UIElement
         Console.CursorVisible = false;
         Render();
         IOManager.KeyPressed += HandleKeyboardInput;
-        while (!Release) { }
+        while (!ReleaseThread) { }
         IOManager.Stop();
         Console.ReadKey();
     }
@@ -124,7 +124,7 @@ class Game : UIElement
         IOManager.KeyPressed -= HandleKeyboardInput;
         Console.Clear();
         Console.WriteLine($"Gratulálok {CurrentPlayer}. játékos, győztél!");
-        Release = true;
+        ReleaseThread = true;
     }
 
     protected override void OnMouseDown(int x, int y)
