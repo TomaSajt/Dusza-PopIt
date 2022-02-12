@@ -1,10 +1,11 @@
 ﻿using PopIt.Data;
 using PopIt.Exception;
 using PopIt.IO;
+using PopIt.UI;
 using System.Text;
 
 namespace PopIt;
-class Game
+class Game : UIElement
 {
     private readonly ColorPair[] colorPairs = { ColorPair.Blue, ColorPair.Red, ColorPair.Green, ColorPair.Yellow };
     private readonly Dictionary<char, ColorPair> colorMap;
@@ -17,8 +18,8 @@ class Game
     private bool Release { get; set; }
     public void NextPlayer() => CurrentPlayer = CurrentPlayer % PlayerCount + 1;
 
-    public Game(string boardPath, int playerCount) : this(Board.CreateFromFile(boardPath), playerCount) { }
-    public Game(Board board, int playerCount)
+    public Game(UIElement parent, int posX, int posY, string boardPath, int playerCount) : this(parent, posX, posY, BoardUtils.CreateFromFile(boardPath), playerCount) { }
+    public Game(UIElement parent, int posX, int posY, Board board, int playerCount) : base(parent, new(posX, posY, board.Width * 2, board.Height))
     {
         if (playerCount == 0) throw new ArgumentException($"Value of {nameof(playerCount)} cannot be less than 1.");
 
@@ -34,7 +35,7 @@ class Game
         Selecting = false;
         Release = false;
     }
-    
+
     /// <summary>
     /// Finds the first valid position for the cursor. This function scans from top-to-bottom left-to-right.
     /// </summary>
@@ -60,19 +61,9 @@ class Game
         Console.CursorVisible = false;
         Render();
         IOManager.KeyPressed += HandleKeyboardInput;
-        IOManager.LeftMouseDown += HandleMouseClcik;
         while (!Release) { }
         IOManager.Stop();
         Console.ReadKey();
-    }
-    public void HandleMouseClcik(int x, int y)
-    {
-        x /= 2;
-        if (!IsValidPosition(x, y)) return;
-        if (Selecting && !IsNeighbourPushedNowWithSameColor(x, y)) return;
-        if (!TryPush(x, y)) return;
-        CursorPosition = new(x, y);
-        Render();
     }
     public void HandleKeyboardInput(ConsoleKey key)
     {
@@ -136,20 +127,28 @@ class Game
         Release = true;
     }
 
-    public void Render()
+    protected override void OnMouseDown(int x, int y)
     {
-        Console.SetCursorPosition(0, 0);
-        StringBuilder sb = new();
+        x /= 2;
+        if (!IsValidPosition(x, y)) return;
+        if (Selecting && !IsNeighbourPushedNowWithSameColor(x, y)) return;
+        if (!TryPush(x, y)) return;
+        CursorPosition = new(x, y);
+        Render();
+    }
+    public override void Draw()
+    {
         for (int j = 0; j < Board.Height; j++)
         {
+            StringBuilder sb = new();
+            Console.SetCursorPosition(Region.X, Region.Y + j);
             for (int i = 0; i < Board.Width; i++)
             {
                 sb.Append(GetCellTextAt(i, j));
             }
-            sb.AppendLine();
+            sb.Append(ConsoleCodes.RESET);
+            Console.WriteLine(sb);
         }
-        sb.Append(ConsoleCodes.RESET);
-        Console.Write(sb);
         Console.WriteLine();
         Console.WriteLine($"{CurrentPlayer}. játékos");
         Console.WriteLine(CursorPosition);

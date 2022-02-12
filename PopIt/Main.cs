@@ -1,6 +1,7 @@
 ﻿using PopIt;
 using PopIt.Data;
 using PopIt.IO;
+using PopIt.UI;
 using System.Text;
 
 bool exit = false;
@@ -15,13 +16,14 @@ do
                     "Pálya generálása és indítás",
                     "Kilépés"
     });
+    var globalParent = UIElement.CreateGlobalParent();
 
     switch (sel)
     {
         case 1:
             Console.Clear();
             Console.WriteLine("Add meg a pálya számát:");
-            new Game($"palya{ReadInt()}.txt", 3).Run();
+            new Game(globalParent, 10, 10, $"palya{ReadInt()}.txt", 3).Run();
             break;
         case 2:
             Console.Clear();
@@ -29,13 +31,10 @@ do
             var size = ReadInt();
             Console.WriteLine("Hány darab hajlítás legyen a pályán? (0-4) (Jelenleg nem működik)");
             var bends = ReadInt();
-            var board = new Board(size, size);
-            board[2, 2].Char = 'a';
-            board[2, 3].Char = 'a';
-            board[2, 4].Char = 'a';
+            var board = BoardUtils.GenerateBoard(size, size, bends);
             Console.WriteLine("Mi legyen a pálya sorszáma? (későbbi betöltéshez)");
-            board.SaveToFile($"palya{ReadInt()}.txt");
-            new Game(board, 3).Run();
+            BoardUtils.SaveToFile(board, $"palya{ReadInt()}.txt");
+            new Game(globalParent, 10, 10, board, 3).Run();
             break;
         case 3:
             exit = true;
