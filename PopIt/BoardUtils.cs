@@ -100,7 +100,7 @@ static class BoardUtils
     /// </summary>
     /// <param name="board">The board to check</param>
     /// <returns></returns>
-    public static bool CheckComponentsNotBroken(Board board)
+    public static bool AreComponentsBroken(Board board)
     {
         HashSet<char> seen = new();
         var vis = new bool[board.Width, board.Height];
@@ -110,14 +110,15 @@ static class BoardUtils
             {
                 char ch = board[i, j].Char;
                 if (vis[i, j] || ch == '.') continue;
-                if (seen.Contains(ch)) return false;
+                if (seen.Contains(ch)) return true;
                 seen.Add(ch);
                 FillFrom(i, j);
             }
         }
+        return false;
         void FillFrom(int x, int y)
         {
-            Queue<Point> queue = new Queue<Point>();
+            var queue = new Queue<Point>();
             queue.Enqueue(new(x, y));
             char ch = board[x, y].Char;
             vis[x, y] = true;
@@ -132,8 +133,31 @@ static class BoardUtils
                 }
             }
         }
-
-        return true;
+    }
+    public static bool IsBoardBroken(Board board, int x, int y)
+    {
+        var queue = new Queue<Point>();
+        var vis = new bool[board.Width, board.Height];
+        queue.Enqueue(new(x, y));
+        vis[x, y] = true;
+        while (queue.Any())
+        {
+            var curr = queue.Dequeue();
+            foreach (var nei in GetNeighboursPositions(board, curr.X, curr.Y))
+            {
+                if (board[nei.X, nei.Y].Char == '.' || vis[nei.X, nei.Y]) continue;
+                vis[nei.X, nei.Y] = true;
+                queue.Enqueue(nei);
+            }
+        }
+        for (int i = 0; i < board.Width; i++)
+        {
+            for (int j = 0; j < board.Height; j++)
+            {
+                if (board[i, j].Char != '.' && !vis[i, j]) return true;
+            }
+        }
+        return false;
     }
     /// <summary>
     /// Takes in a <see cref="Board"/> and returns a valid coloring using the given array of <see cref="ColorPair"/>s.

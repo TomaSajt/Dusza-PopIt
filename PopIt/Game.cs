@@ -26,11 +26,11 @@ class Game : UIElement
         PlayerCount = playerCount;
         CurrentPlayer = 1;
         Board = board;
-        if (!BoardUtils.CheckComponentsNotBroken(Board)) throw new InvalidBoardFormatException("The board cannot contain the same letter in a different, not connected component");
-        //TODO: Validate whether or not every cell is reachable from every other point
-
-        colorMap = BoardUtils.CreateColorMap(Board, colorPairs);
+        if (BoardUtils.AreComponentsBroken(Board)) throw new InvalidBoardFormatException("The board cannot contain the same letter in a different, not connected component");
         CursorPosition = FindFirstValidPos();
+        //The board cannot contain two different islands, as it has to be traversable by the arrow keys
+        if (BoardUtils.IsBoardBroken(Board, CursorPosition.X, CursorPosition.Y)) throw new InvalidBoardFormatException("The board should be traversable from every point to every other point.");
+        colorMap = BoardUtils.CreateColorMap(Board, colorPairs);
         RemainingCells = board.CountCells();
         Selecting = false;
         ReleaseThread = false;

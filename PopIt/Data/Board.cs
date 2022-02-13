@@ -6,7 +6,6 @@ class Board
     private readonly Cell[,] cells;
     public int Width { get => cells.GetLength(0); }
     public int Height { get => cells.GetLength(1); }
-    public int PushedCount { get; set; } = 0;
 
     public Cell this[int x, int y] { get => cells[x, y]; }
     public Board(int width, int height)
