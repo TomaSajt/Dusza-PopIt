@@ -6,7 +6,6 @@
 		<Nullable>enable</Nullable>
 		<OutputType>Exe</OutputType>
 		<PublishSingleFile>true</PublishSingleFile>
-		<SelfContained>true</SelfContained>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<PublishReadyToRun>true</PublishReadyToRun>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
