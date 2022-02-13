@@ -22,7 +22,7 @@ jobs:
         run: dotnet publish -r win-x64 -c Release --self-contained true --output "PublishSC"
         
       - name: Test
-        run: dotnet test -c Release --no-restore --no-build --verbosity normal
+        run: dotnet test -c Release
 
       - name: Upload publish results
         uses: actions/upload-artifact@v2
