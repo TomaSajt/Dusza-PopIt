@@ -22,7 +22,7 @@ jobs:
         run: dotnet publish -r win-x64 -c Release --self-contained true --output "PublishSC"
         
       - name: Test
-        run: dotnet test -c Release
+        run: dotnet test -c Release --verbosity normal
 
       - name: Upload publish results
         uses: actions/upload-artifact@v2
@@ -35,5 +35,10 @@ jobs:
         with:
           name: PopIt-SC.exe
           path: PublishSC/PopIt.exe
-    
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: TestResults
+          path: TestResults
         if: ${{ always() }}

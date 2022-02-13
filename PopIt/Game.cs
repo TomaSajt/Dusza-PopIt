@@ -27,31 +27,15 @@ class Game : UIElement
         CurrentPlayer = 1;
         Board = board;
         if (BoardUtils.AreComponentsBroken(Board)) throw new InvalidBoardFormatException("The board cannot contain the same letter in a different, not connected component");
-        CursorPosition = FindFirstValidPos();
         //The board cannot contain two different islands, as it has to be traversable by the arrow keys
-        if (BoardUtils.IsBoardBroken(Board, CursorPosition.X, CursorPosition.Y)) throw new InvalidBoardFormatException("The board should be traversable from every point to every other point.");
+        if (BoardUtils.IsBoardBroken(Board)) throw new InvalidBoardFormatException("The board should be traversable from every point to every other point.");
+        CursorPosition = BoardUtils.FindFirstValidPos(Board);
         colorMap = BoardUtils.CreateColorMap(Board, colorPairs);
         RemainingCells = board.CountCells();
         Selecting = false;
         ReleaseThread = false;
     }
 
-    /// <summary>
-    /// Finds the first valid position for the cursor. This function scans from top-to-bottom left-to-right.
-    /// </summary>
-    /// <returns>A <see cref="Point"></see> with the coordinates</returns>
-    /// <exception cref="InvalidBoardFormatException"></exception>
-    private Point FindFirstValidPos()
-    {
-        for (int i = 0; i < Board.Width; i++)
-        {
-            for (int j = 0; j < Board.Height; j++)
-            {
-                if (Board[i, j].Char != '.') return new(i, j);
-            }
-        }
-        throw new InvalidBoardFormatException("The board has to contain at least 1 valid cell");
-    }
     /// <summary>
     /// Starts the game, which locks the thread until the game is over
     /// </summary>

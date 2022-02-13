@@ -1,5 +1,5 @@
 ﻿namespace PopIt.Data;
-class Board
+public class Board
 {
     private readonly Cell[,] cells;
     public int Width { get => cells.GetLength(0); }

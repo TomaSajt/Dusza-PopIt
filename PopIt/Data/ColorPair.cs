@@ -1,5 +1,5 @@
 ﻿namespace PopIt.Data;
-record struct ColorPair(Color Dark, Color Light)
+public record struct ColorPair(Color Dark, Color Light)
 {
     public static readonly ColorPair Red = new(Color.DARK_RED, Color.RED);
     public static readonly ColorPair Blue = new(Color.DARK_BLUE, Color.BLUE);

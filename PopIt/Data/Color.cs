@@ -1,5 +1,5 @@
 ﻿namespace PopIt.Data;
-record struct Color(byte R, byte G, byte B)
+public record struct Color(byte R, byte G, byte B)
 {
     public static readonly Color BLACK = new(12, 12, 12);
     public static readonly Color DARK_RED = new(197, 15, 31);

@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PopIt", "PopIt\PopIt.csproj", "{CA274507-3D44-4F01-9688-FC8DAD089665}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PopIt.Test", "PopIt.Test\PopIt.Test.csproj", "{3C8D814E-A372-400D-8419-7C865F5900D5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PopIt.Test", "PopIt.Test\PopIt.Test.csproj", "{9121BA73-8CA7-4E81-9462-24854F3AF13A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{CA274507-3D44-4F01-9688-FC8DAD089665}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA274507-3D44-4F01-9688-FC8DAD089665}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA274507-3D44-4F01-9688-FC8DAD089665}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3C8D814E-A372-400D-8419-7C865F5900D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3C8D814E-A372-400D-8419-7C865F5900D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3C8D814E-A372-400D-8419-7C865F5900D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3C8D814E-A372-400D-8419-7C865F5900D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9121BA73-8CA7-4E81-9462-24854F3AF13A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9121BA73-8CA7-4E81-9462-24854F3AF13A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9121BA73-8CA7-4E81-9462-24854F3AF13A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9121BA73-8CA7-4E81-9462-24854F3AF13A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

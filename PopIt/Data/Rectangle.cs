@@ -1,5 +1,5 @@
 ﻿namespace PopIt.Data;
-record struct Rectangle(int X, int Y, int Width, int Height)
+public record struct Rectangle(int X, int Y, int Width, int Height)
 {
     public int Top { get => Y; }
     public int Bottom { get => Y + Height; }

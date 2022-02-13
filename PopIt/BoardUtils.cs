@@ -6,7 +6,7 @@ namespace PopIt;
 /// <summary>
 /// An utility class which has useful functions for working with <see cref="Board"/>s.
 /// </summary>
-static class BoardUtils
+public static class BoardUtils
 {
     private static readonly Random rand = new();
     /// <summary>
@@ -134,12 +134,13 @@ static class BoardUtils
             }
         }
     }
-    public static bool IsBoardBroken(Board board, int x, int y)
+    public static bool IsBoardBroken(Board board)
     {
+        var p = FindFirstValidPos(board);
         var queue = new Queue<Point>();
         var vis = new bool[board.Width, board.Height];
-        queue.Enqueue(new(x, y));
-        vis[x, y] = true;
+        queue.Enqueue(p);
+        vis[p.X, p.Y] = true;
         while (queue.Any())
         {
             var curr = queue.Dequeue();
@@ -159,6 +160,24 @@ static class BoardUtils
         }
         return false;
     }
+
+    /// <summary>
+    /// Finds the first valid position for the cursor. This function scans from top-to-bottom left-to-right.
+    /// </summary>
+    /// <returns>A <see cref="Point"></see> with the coordinates</returns>
+    /// <exception cref="InvalidBoardFormatException"></exception>
+    public static Point FindFirstValidPos(Board board)
+    {
+        for (int i = 0; i < board.Width; i++)
+        {
+            for (int j = 0; j < board.Height; j++)
+            {
+                if (board[i, j].Char != '.') return new(i, j);
+            }
+        }
+        throw new InvalidBoardFormatException("The board has to contain at least one valid cell");
+    }
+
     /// <summary>
     /// Takes in a <see cref="Board"/> and returns a valid coloring using the given array of <see cref="ColorPair"/>s.
     /// </summary>
