@@ -1,9 +1,9 @@
-name: dotnet package
+name: continous integration
 
 on: [push]
 
 jobs:
-  build:
+  dotnet-publish:
 
     runs-on: windows-latest
     steps:
@@ -16,13 +16,13 @@ jobs:
           dotnet-version: '6.0'
 
       - name: Publish
-        run: dotnet publish -r win-x64 -c Release --self-contained false --output "Publish"
+        run: dotnet publish -c Release --self-contained false --output "Publish"
         
       - name: Publish SC
-        run: dotnet publish -r win-x64 -c Release --self-contained true --output "PublishSC"
+        run: dotnet publish -c Release --self-contained true --output "PublishSC"
         
       - name: Test
-        run: dotnet test -c Release --verbosity normal
+        run: dotnet test -c Release --logger "trx;logfilename=Tests.trx" --no-restore --verbosity normal --results-directory "TestResults"
 
       - name: Upload publish results
         uses: actions/upload-artifact@v2

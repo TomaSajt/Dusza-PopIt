@@ -7,6 +7,7 @@
 		<Nullable>enable</Nullable>
 		<OutputType>Exe</OutputType>
 		<PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageIcon>popit128.png</PackageIcon>
 		<RepositoryUrl>https://github.com/TomaSajt/Dusza-PopIt</RepositoryUrl>
