@@ -1,6 +1,4 @@
-﻿using PopIt.Exception;
-
-namespace PopIt.Data;
+﻿namespace PopIt.Data;
 class Board
 {
     private readonly Cell[,] cells;
