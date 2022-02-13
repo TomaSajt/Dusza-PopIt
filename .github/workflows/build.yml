@@ -16,10 +16,10 @@ jobs:
           dotnet-version: '6.0'
 
       - name: Publish
-        run: dotnet publish -c Release --self-contained false --output "Publish"
+        run: dotnet publish -r win-x64 -c Release --self-contained false --output "Publish"
         
       - name: Publish SC
-        run: dotnet publish -c Release --self-contained true --output "PublishSC"
+        run: dotnet publish -r win-x64 -c Release --self-contained true --output "PublishSC"
         
       - name: Test
         run: dotnet test -c Release --no-restore --no-build --verbosity normal
