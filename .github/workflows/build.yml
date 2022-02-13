@@ -20,9 +20,18 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore --output "BuildResults"
         
+      - name: Publish
+        run: dotnet publish -r win-x64 -c Release --self-contained --output "PublishResults"
+
       - name: Upload build results
         uses: actions/upload-artifact@v2
         with:
           name: dotnet-build-results
           path: BuildResults
+
+      - name: Upload publish results
+        uses: actions/upload-artifact@v2
+        with:
+          name: dotnet-publish-results
+          path: PublishResults
         if: ${{ always() }}
