@@ -1,6 +1,6 @@
 ﻿namespace PopIt.Exception;
 sealed class GraphColoringException : System.Exception
 {
-    public GraphColoringException(string message) : base($"Error while trying to color graph. Reason: '${message}'") { }
+    public GraphColoringException(string message) : base($"Error while trying to color graph. Reason: '{message}'") { }
 }
 
