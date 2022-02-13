@@ -17,12 +17,22 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
         
-      - name: Build
-        run: dotnet build --configuration Release --no-restore --output "BuildResults"
+      - name: Publish
+        run: dotnet publish -c Release --output "Publish"
         
-      - name: Upload build results
+      - name: Publish SC
+        run: dotnet publish -c Release --self-contained --output "PublishSC"
+        
+      - name: Upload publish results
         uses: actions/upload-artifact@v2
         with:
-          name: dotnet-build-results
-          path: BuildResults
+          name: PopIt.exe
+          path: Publish/PopIt.exe
+
+      - name: Upload publish sc results
+        uses: actions/upload-artifact@v2
+        with:
+          name: PopIt-SC.exe
+          path: PublishSC/PopIt.exe
+    
         if: ${{ always() }}

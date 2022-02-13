@@ -5,6 +5,10 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<OutputType>Exe</OutputType>
+		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>true</SelfContained>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<PublishReadyToRun>true</PublishReadyToRun>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageIcon>popit128.png</PackageIcon>
 		<RepositoryUrl>https://github.com/TomaSajt/Dusza-PopIt</RepositoryUrl>
