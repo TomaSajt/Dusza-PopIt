@@ -53,7 +53,7 @@ public static class BoardUtils
     /// <param name="w">The width of the board</param>
     /// <param name="h">The height of the board</param>
     /// <param name="bends">The numer of bends the board will have</param>
-    /// <returns></returns>
+    /// <returns>The generated board</returns>
     public static Board GenerateBoard(int w, int h, int bends)
     {
         if (w <= 0 || h <= 0) throw new InvalidBoardFormatException("A generated board has to have atleast 1 cell");
@@ -83,10 +83,16 @@ public static class BoardUtils
             }
             if (c <= 'z') return board;
         }
-
-
     }
 
+    /// <summary>
+    /// Gets the positions of neighbouring cells of a cell at the given coordinates.
+    /// If the given position is on the edge of the board it will not yield positions out of bounds.
+    /// </summary>
+    /// <param name="board">The board to use</param>
+    /// <param name="x">The X coordinate</param>
+    /// <param name="y">The Y coordinate</param>
+    /// <returns>An <see cref="IEnumerable(Point)"/> which contains the positions of the neighbours</returns>
     public static IEnumerable<Point> GetNeighboursPositions(Board board, int x, int y)
     {
         if (x > 0) yield return new(x - 1, y);
@@ -94,6 +100,13 @@ public static class BoardUtils
         if (x < board.Width - 1) yield return new(x + 1, y);
         if (y < board.Height - 1) yield return new(x, y + 1);
     }
+    /// <summary>
+    /// Gets the actuall cell instances of the neighbours of the cell at the given coordinates.
+    /// </summary>
+    /// <param name="board"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns>An <see cref="IEnumerable(Cell)"/> containing the neighbours.</returns>
     public static IEnumerable<Cell> GetNeighboursAt(Board board, int x, int y) => GetNeighboursPositions(board, x, y).Select(p => board[p.X, p.Y]);
 
     /// <summary>
@@ -182,11 +195,12 @@ public static class BoardUtils
     /// <summary>
     /// Takes in a <see cref="Board"/> and returns a valid coloring using the given array of <see cref="ColorPair"/>s.
     /// </summary>
-    /// <param name="board"></param>
+    /// <param name="board">The board</param>
     /// <param name="colorPairs"></param>
-    /// <returns></returns>
-    public static Dictionary<char, ColorPair> CreateColorMap(Board board, ColorPair[] colorPairs)
+    /// <returns>A valid coloring of the board</returns>
+    public static Dictionary<char, ColorPair> CreateColorMap(Board board)
     {
+        var colorPairs = new ColorPair[] { ColorPair.Blue, ColorPair.Red, ColorPair.Green, ColorPair.Yellow };
         Dictionary<char, HashSet<char>> adjDict = new();
         for (int i = 0; i < board.Width; i++)
         {
@@ -211,7 +225,7 @@ public static class BoardUtils
     /// <typeparam name="T">The type of the graph nodes</typeparam>
     /// <param name="graph">A graph in the form of an adjecency list</param>
     /// <param name="m">The number of different colors to use</param>
-    /// <returns>A <see cref="Dictionary{T, int}"/>, which maps a node of the graph to a color index.</returns>
+    /// <returns>A <see cref="Dictionary(T, int)"/>, which maps a node of the graph to a color index.</returns>
     /// <exception cref="GraphColoringException"/>
     public static Dictionary<T, int> GetMColoring<T, U>(Dictionary<T, U> graph, int m) where T : notnull where U : IEnumerable<T>
     {

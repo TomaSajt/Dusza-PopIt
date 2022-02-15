@@ -7,7 +7,6 @@ using System.Text;
 namespace PopIt;
 class Game : UIElement
 {
-    private readonly ColorPair[] colorPairs = { ColorPair.Blue, ColorPair.Red, ColorPair.Green, ColorPair.Yellow };
     private readonly Dictionary<char, ColorPair> colorMap;
     public int PlayerCount { get; private set; }
     public int CurrentPlayer { get; private set; }
@@ -30,7 +29,7 @@ class Game : UIElement
         //The board cannot contain two different islands, as it has to be traversable by the arrow keys
         if (BoardUtils.IsBoardBroken(Board)) throw new InvalidBoardFormatException("The board should be traversable from every point to every other point.");
         CursorPosition = BoardUtils.FindFirstValidPos(Board);
-        colorMap = BoardUtils.CreateColorMap(Board, colorPairs);
+        colorMap = BoardUtils.CreateColorMap(Board);
         RemainingCells = board.CountCells();
         Selecting = false;
         ReleaseThread = false;
