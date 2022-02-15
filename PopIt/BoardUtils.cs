@@ -12,7 +12,7 @@ public static class BoardUtils
     /// <summary>
     /// Loads a <see cref="Board"/> from the given path.
     /// </summary>
-    /// <param name="path"></param>
+    /// <param name="path">The path of the new file</param>
     /// <returns>The <see cref="Board"/> read from the file</returns>
     /// <exception cref="InvalidBoardFormatException"></exception>
     public static Board CreateFromFile(string path)
@@ -47,7 +47,7 @@ public static class BoardUtils
     }
     /// <summary>
     /// Generates a board with the given dimensions and bends.
-    /// The board will be completely filled up with chars, so there won't be any '.'-s.<
+    /// The board will be completely filled up with chars, so there won't be any '.'-s.
     /// The <paramref name="bends"/> parameter dictates how many turns the first generated region/component is going to have.
     /// </summary>
     /// <param name="w">The width of the board</param>
@@ -56,8 +56,9 @@ public static class BoardUtils
     /// <returns></returns>
     public static Board GenerateBoard(int w, int h, int bends)
     {
+        if (w <= 0 || h <= 0) throw new InvalidBoardFormatException("A generated board has to have atleast 1 cell");
         Point GetRandOffset() => rand.Next(2) == 0 ? new(0, 1) : new(1, 0);
-        bool InBound(int x, int y) => 0 <= x && x < w && 0 <= y && y < h;
+        bool InBound(Board board, int x, int y) => 0 <= x && x < w && 0 <= y && y < h && board[x, y].Char == '.';
         while (true)
         {
             char c = 'a';
@@ -73,7 +74,7 @@ public static class BoardUtils
                     {
                         int nx = i + offset.X * k;
                         int ny = j + offset.Y * k;
-                        if (!InBound(nx, ny)) break;
+                        if (!InBound(board, nx, ny)) break;
                         board[nx, ny].Char = c;
                         next = true;
                     }
@@ -99,7 +100,7 @@ public static class BoardUtils
     /// Checks whether or not there are any dijoint components in the given <see cref="Board"/>.
     /// </summary>
     /// <param name="board">The board to check</param>
-    /// <returns></returns>
+    /// <returns><c>true</c> if the board is broken, <c>false</c> if not</returns>
     public static bool AreComponentsBroken(Board board)
     {
         HashSet<char> seen = new();
