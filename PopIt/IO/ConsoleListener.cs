@@ -29,18 +29,18 @@ static class ConsoleListener
         WindowResizeEvent = null;
     }
 
-    private static bool Running = false;
+    private static bool running = false;
     private static uint savedMode = 0;
     public static void Run()
     {
-        if (Running) return;
-        Running = true;
+        if (running) return;
+        running = true;
 
         IntPtr inHandle = GetStdHandle(STD_INPUT_HANDLE);
         uint mode = 0;
         GetConsoleMode(inHandle, ref mode);
         savedMode = mode;
-        // Ki kell kapcsolni a kijelölés módot, hogy ne írja felül a sima kattintás Eventet
+        // Disables quick edit mode, which would override mouse events if not turned off
         mode &= ~ENABLE_QUICK_EDIT_MODE;
         mode |= ENABLE_MOUSE_INPUT;
         SetConsoleMode(inHandle, mode);
@@ -54,7 +54,7 @@ static class ConsoleListener
                 uint numRead = 0;
                 INPUT_RECORD[] record = { new INPUT_RECORD() };
                 ReadConsoleInput(handleIn, record, 1, ref numRead);
-                if (!Running)
+                if (!running)
                 {
                     uint numWritten = 0;
                     WriteConsoleInput(handleIn, record, 1, ref numWritten);
@@ -77,7 +77,7 @@ static class ConsoleListener
     }
     public static void Stop()
     {
-        Running = false;
+        running = false;
         MouseEvent = null;
         KeyEvent = null;
         WindowResizeEvent = null;

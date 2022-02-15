@@ -112,7 +112,6 @@ static class NativeMethods
     [DllImport("kernel32.dll")]
     public static extern bool SetConsoleMode(IntPtr hConsoleInput, uint dwMode);
 
-
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
     public static extern bool ReadConsoleInput(IntPtr hConsoleInput, [Out] INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsRead);
 

@@ -12,7 +12,7 @@ static class IOManager
     #endregion
     private static bool leftState = false;
     private static bool rightState = false;
-    private static bool started = false;
+    private static bool running = false;
     private static int prevX = -1, prevY = -1;
 
     static IOManager() => ClearEvents();
@@ -28,8 +28,8 @@ static class IOManager
     }
     public static void Run()
     {
-        if (started) return;
-        started = true;
+        if (running) return;
+        running = true;
 
         ConsoleListener.Run();
         ConsoleListener.MouseEvent += e =>
@@ -75,7 +75,7 @@ static class IOManager
     }
     public static void Stop()
     {
-        started = false;
+        running = false;
         ConsoleListener.Stop();
         ClearEvents();
     }
