@@ -1,4 +1,4 @@
-name: continous integration
+name: continuous integration
 
 on: [push]
 
@@ -14,16 +14,23 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0'
+        
+      - name: Test
+        run: dotnet test -c Release --logger "trx;logfilename=Tests.trx" --verbosity normal --results-directory "TestResults"
 
       - name: Publish
         run: dotnet publish -c Release --self-contained false --output "Publish"
         
       - name: Publish SC
         run: dotnet publish -c Release --self-contained true --output "PublishSC"
-        
-      - name: Test
-        run: dotnet test -c Release --logger "trx;logfilename=Tests.trx" --no-restore --verbosity normal --results-directory "TestResults"
 
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: TestResults
+          path: TestResults
+        if: ${{ always() }}
+        
       - name: Upload publish results
         uses: actions/upload-artifact@v2
         with:
@@ -35,10 +42,3 @@ jobs:
         with:
           name: PopIt-SC.exe
           path: PublishSC/PopIt.exe
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v2
-        with:
-          name: TestResults
-          path: TestResults
-        if: ${{ always() }}
