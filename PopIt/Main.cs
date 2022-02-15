@@ -3,6 +3,7 @@ using PopIt.Data;
 using PopIt.UI;
 using System.Text;
 
+
 bool exit = false;
 var globalParent = UIElement.CreateGlobalParent();
 do
@@ -16,18 +17,18 @@ do
         case 1:
             Console.Clear();
             Console.WriteLine("Add meg a pálya számát:");
-            new Game(globalParent, 10, 10, $"palya{ReadInt()}.txt", 3).Run();
+            new Game(globalParent, 10, 10, $"palya{ReadInt()}.txt", 2).Run();
             //Todo: check if board exists
             break;
         case 2:
             Console.Clear();
             Console.WriteLine("Mekkora legyen a pálya? (4-10)");
             var size = ReadInt();
-            Console.WriteLine("Hány darab hajlítás legyen a pályán? (0-4) (Jelenleg nem működik)");
+            Console.WriteLine("Hány darab hajlítás legyen a pályán? (0-4)");
             var bends = ReadInt();
             var board = BoardUtils.GenerateBoard(size, size, bends);
             DoSaveBoard(board);
-            new Game(globalParent, 10, 10, board, 3).Run();
+            new Game(globalParent, 10, 10, board, 2).Run();
             break;
         case 3:
             exit = true;

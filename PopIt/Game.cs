@@ -7,15 +7,23 @@ using System.Text;
 namespace PopIt;
 class Game : UIElement
 {
-    private readonly Dictionary<char, ColorPair> colorMap;
     public int PlayerCount { get; private set; }
     public int CurrentPlayer { get; private set; }
     public int RemainingCells { get; private set; }
-    private Board Board { get; set; }
+    private Dictionary<char, ColorPair> ColorMap { get; }
+    private Board Board { get; }
     private Point CursorPosition { get; set; }
     private bool Selecting { get; set; }
     private bool ReleaseThread { get; set; }
-    public void NextPlayer() => CurrentPlayer = CurrentPlayer % PlayerCount + 1;
+    /// <summary>
+    /// Advances to the next player, while resetting the board PushedNow states
+    /// </summary>
+    public void NextTurn()
+    {
+        CurrentPlayer = CurrentPlayer % PlayerCount + 1;
+        Board.ResetPushedNow();
+        Selecting = false;
+    }
 
     public Game(UIElement parent, int posX, int posY, string boardPath, int playerCount) : this(parent, posX, posY, BoardUtils.CreateFromFile(boardPath), playerCount) { }
     public Game(UIElement parent, int posX, int posY, Board board, int playerCount) : base(parent, new(posX, posY, board.Width * 2, board.Height))
@@ -29,7 +37,7 @@ class Game : UIElement
         //The board cannot contain two different islands, as it has to be traversable by the arrow keys
         if (BoardUtils.IsBoardBroken(Board)) throw new InvalidBoardFormatException("The board should be traversable from every point to every other point.");
         CursorPosition = BoardUtils.FindFirstValidPos(Board);
-        colorMap = BoardUtils.CreateColorMap(Board);
+        ColorMap = BoardUtils.CreateColorMap(Board);
         RemainingCells = board.CountCells();
         Selecting = false;
         ReleaseThread = false;
@@ -83,9 +91,7 @@ class Game : UIElement
     private bool TrySubmit()
     {
         if (!Selecting) return false;
-        Board.ResetPushedNow();
-        Selecting = false;
-        NextPlayer();
+        NextTurn();
         if (RemainingCells == 0)
         {
             HandleWin();
@@ -112,6 +118,7 @@ class Game : UIElement
 
     protected override void OnMouseDown(int x, int y)
     {
+        // The console cells are 1x2 so divide by 2 to align hitbox
         x /= 2;
         if (!IsValidPosition(x, y)) return;
         if (Selecting && !IsNeighbourPushedNowWithSameColor(x, y)) return;
@@ -121,9 +128,11 @@ class Game : UIElement
     }
     public override void Draw()
     {
+
         for (int j = 0; j < Board.Height; j++)
         {
             StringBuilder sb = new();
+            sb.Append(Color.DARK_MAGENTA.ToForeColStr());
             Console.SetCursorPosition(Region.X, Region.Y + j);
             for (int i = 0; i < Board.Width; i++)
             {
@@ -139,7 +148,7 @@ class Game : UIElement
     public string GetCellTextAt(int x, int y)
     {
         var cell = Board[x, y];
-        var col = cell.Char == '.' ? Color.BLACK : Board[x, y].Pushed ? colorMap[cell.Char].Light : colorMap[cell.Char].Dark;
+        var col = cell.Char == '.' ? Color.BLACK : Board[x, y].Pushed ? ColorMap[cell.Char].Light : ColorMap[cell.Char].Dark;
         var posMatch = new Point(x, y) == CursorPosition;
         var text = cell.PushedBefore ? posMatch ? "[]" : "##" : posMatch ? "><" : "  ";
         return $"{col.ToBackColStr()}{text}";
@@ -158,6 +167,6 @@ class Game : UIElement
             (IsValidPosition(x, y - 1) && Board[x, y - 1].PushedNow && Board[x, y].Char == Board[x, y - 1].Char)
         );
     bool CanStepToFrom(int fx, int fy, int tx, int ty) => IsValidPosition(tx, ty) && (!Selecting || (Board[fx, fy].Char == Board[tx, ty].Char && !Board[tx, ty].PushedBefore && IsNeighbourOrSelfPushedNow(tx, ty)));
-    bool IsValidPosition(int x, int y) => x >= 0 && y >= 0 && x < Board.Width && y < Board.Height && Board[x, y].Char != '.';
+    bool IsValidPosition(int x, int y) => BoardUtils.IsInBounds(Board, x, y) && Board[x, y].Char != '.';
 
 }

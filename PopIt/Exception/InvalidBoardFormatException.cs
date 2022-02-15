@@ -5,6 +5,7 @@ namespace PopIt.Exception;
 /// </summary>
 public sealed class InvalidBoardFormatException : System.Exception
 {
+    public InvalidBoardFormatException() : base($"Board was of the wrong format.") { }
     public InvalidBoardFormatException(string reason) : base($"Board was of the wrong format. Reason: '{reason}'") { }
 }
 

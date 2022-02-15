@@ -5,6 +5,7 @@
 /// <remarks>This class cannot be inherited from</remarks>
 public sealed class GraphColoringException : System.Exception
 {
-    public GraphColoringException(string message) : base($"Error while trying to color graph. Reason: '{message}'") { }
+    public GraphColoringException() : base($"Error while trying to color graph.") { }
+    public GraphColoringException(string reason) : base($"Error while trying to color graph. Reason: '{reason}'") { }
 }
 

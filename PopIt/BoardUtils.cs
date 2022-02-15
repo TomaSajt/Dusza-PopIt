@@ -8,6 +8,7 @@ namespace PopIt;
 /// </summary>
 public static class BoardUtils
 {
+    private const int maxRetries = 100;
     private static readonly Random rand = new();
     /// <summary>
     /// Loads a <see cref="Board"/> from the given path.
@@ -32,8 +33,9 @@ public static class BoardUtils
         return board;
     }
     /// <summary>
-    /// Saves the given board to a file with the given path. Will override the file if it exists. Might throw an exception if the file is not accessible.
+    /// Saves the given board to a file with the given path.
     /// </summary>
+    /// <remarks>Will override the file if it exists.</remarks>
     /// <param name="board">The board to save</param>
     /// <param name="path">The path of the new file</param>
     public static void SaveToFile(Board board, string path)
@@ -45,24 +47,38 @@ public static class BoardUtils
             sw.WriteLine();
         }
     }
+
     /// <summary>
     /// Generates a board with the given dimensions and bends.
-    /// The board will be completely filled up with chars, so there won't be any '.'-s.
     /// The <paramref name="bends"/> parameter dictates how many turns the first generated region/component is going to have.
     /// </summary>
+    /// <remarks>The board will be completely filled up with valid chars.</remarks>
     /// <param name="w">The width of the board</param>
     /// <param name="h">The height of the board</param>
     /// <param name="bends">The numer of bends the board will have</param>
     /// <returns>The generated board</returns>
     public static Board GenerateBoard(int w, int h, int bends)
     {
-        if (w <= 0 || h <= 0) throw new InvalidBoardFormatException("A generated board has to have atleast 1 cell");
-        Point GetRandOffset() => rand.Next(2) == 0 ? new(0, 1) : new(1, 0);
-        bool InBound(Board board, int x, int y) => 0 <= x && x < w && 0 <= y && y < h && board[x, y].Char == '.';
-        while (true)
+        if (w < 4 || h < 4) throw new InvalidBoardFormatException("A generated board has to be at least 4 by 4");
+        if (w > 10 || h > 10) throw new InvalidBoardFormatException("A generated board can only be at most 10 by 10");
+        static Point GetRandOffset() => rand.Next(2) == 0 ? new(0, 1) : new(1, 0);
+        for (int iters = 0; iters < maxRetries; iters++)
         {
             char c = 'a';
             var board = new Board(w, h);
+            if (bends > 0)
+            {
+                var bentPath = FindPathOfNBends(bends, new(rand.Next(1, w - 1), rand.Next(1, h - 1)), w, h);
+                if (bentPath is null) throw new PathfindingException($"Couldn't find a path with {bends} bends.");
+                for (int i = 0; i < w; i++)
+                {
+                    for (int j = 0; j < h; j++)
+                    {
+                        if (bentPath.Contains(new(i, j))) board[i, j].Char = c;
+                    }
+                }
+                c++;
+            }
             for (int i = 0; i < w; i++)
             {
                 for (int j = 0; j < h; j++)
@@ -74,7 +90,7 @@ public static class BoardUtils
                     {
                         int nx = i + offset.X * k;
                         int ny = j + offset.Y * k;
-                        if (!InBound(board, nx, ny)) break;
+                        if (!IsInBounds(board, nx, ny) || board[nx, ny].Char != '.') break;
                         board[nx, ny].Char = c;
                         next = true;
                     }
@@ -83,25 +99,86 @@ public static class BoardUtils
             }
             if (c <= 'z') return board;
         }
+        throw new InvalidBoardFormatException($"Couldn't generate a board of size ({w};{h}) after {maxRetries} tries.")
     }
 
     /// <summary>
-    /// Gets the positions of neighbouring cells of a cell at the given coordinates.
-    /// If the given position is on the edge of the board it will not yield positions out of bounds.
+    /// Finds a path, bound by a given area, which has exactly <paramref name="bends"/> number of bends.
     /// </summary>
-    /// <param name="board">The board to use</param>
-    /// <param name="x">The X coordinate</param>
-    /// <param name="y">The Y coordinate</param>
-    /// <returns>An <see cref="IEnumerable(Point)"/> which contains the positions of the neighbours</returns>
-    public static IEnumerable<Point> GetNeighboursPositions(Board board, int x, int y)
+    /// <remarks>This method uses backtracking, so it might take a long time in certain situations.</remarks>
+    /// <param name="bends"></param>
+    /// <param name="startPoint"></param>
+    /// <param name="w">The width of the area</param>
+    /// <param name="h">The height of the area</param>
+    /// <returns>A <see cref="HashSet(Point)"/> containing the points making up the path</returns>
+    public static HashSet<Point>? FindPathOfNBends(int bends, Point startPoint, int w, int h)
     {
-        if (x > 0) yield return new(x - 1, y);
-        if (y > 0) yield return new(x, y - 1);
-        if (x < board.Width - 1) yield return new(x + 1, y);
-        if (y < board.Height - 1) yield return new(x, y + 1);
+        List<Point> cardDirs = new() { new(0, 1), new(1, 0), new(0, -1), new(-1, 0) };
+        HashSet<Point> visited = new();
+        // Track visited state so we don't touch/cross.
+        visited.Add(startPoint);
+        foreach (var direction in cardDirs.OrderBy(x => rand.Next()))
+        {
+            // Check if there's a path of the desired number of bends in this direction.
+            var res = Extend(bends, startPoint, direction);
+            if (res == null)
+                continue;
+            res.Add(startPoint);
+            // Finish & return the path.
+            return res;
+        }
+
+        // Search failed. No such path exists!
+        return null;
+
+
+        HashSet<Point>? Extend(int remainingBends, Point epicstartPoint, Point currentDirection)
+        {
+            HashSet<Point> path = new();
+            // Proceed in the given direction to find our next point.    
+            Point point = epicstartPoint + currentDirection;
+
+            if (visited.Contains(point) || !IsInBounds(w, h, point.X, point.Y)) return null;
+
+            // Avoid touching/crossing path so far.    
+            foreach (var neighbour in cardDirs.Where(x => x != -currentDirection).Select(x => point + x))
+                if (IsInBounds(w, h, neighbour.X, neighbour.Y) && visited.Contains(neighbour)) return null;
+
+            visited.Add(point);
+
+            // Endpoint! Time to bubble back up.    
+            if (remainingBends == 0)
+                return new() { point };
+            foreach (var turnDirection in cardDirs.Where(x => x != -currentDirection).OrderBy(x => rand.Next()))
+            {
+                // Search for a feasible solution to a smaller sub-problem.
+                var res = Extend(remainingBends - (currentDirection != turnDirection ? 1 : 0), point, turnDirection);
+                if (res == null) continue;
+                res.Add(point);
+                return res;
+            }
+
+            // No such path through this point panned out. Undo our choice to try it.    
+            visited.Remove(point);
+            return null;
+        }
     }
+
+
+
     /// <summary>
-    /// Gets the actuall cell instances of the neighbours of the cell at the given coordinates.
+    /// Gets the positions of neighbouring cells of a cell at the given coordinates.
+    /// </summary>
+    /// <remarks>If the given position is on the edge of the board it will not yield positions out of bounds.</remarks>
+    /// <param name="board"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns>An <see cref="IEnumerable(Point)"/> which contains the positions of the neighbours</returns>
+    public static IEnumerable<Point> GetNeighboursPositions(Board board, int x, int y) =>
+        new Point[] { new(x - 1, y), new(x, y - 1), new(x + 1, y), new(x, y + 1) }.Where(p => IsInBounds(board, p.X, p.Y));
+
+    /// <summary>
+    /// Gets the actuall <see cref="Cell"/> instances of the neighbours of the cell at the given coordinates.
     /// </summary>
     /// <param name="board"></param>
     /// <param name="x"></param>
@@ -113,7 +190,6 @@ public static class BoardUtils
     /// Checks whether or not there are any dijoint components in the given <see cref="Board"/>.
     /// </summary>
     /// <param name="board">The board to check</param>
-    /// <returns><c>true</c> if the board is broken, <c>false</c> if not</returns>
     public static bool AreComponentsBroken(Board board)
     {
         HashSet<char> seen = new();
@@ -220,8 +296,9 @@ public static class BoardUtils
     }
 
     /// <summary>
-    /// This function uses backtracking to create the m-coloring of an undirected graph.
+    /// This function creates the m-coloring of an undirected graph.
     /// </summary>
+    /// <remarks>This uses backtracing so it might take a long time in certain situations.</remarks>
     /// <typeparam name="T">The type of the graph nodes</typeparam>
     /// <param name="graph">A graph in the form of an adjecency list</param>
     /// <param name="m">The number of different colors to use</param>
@@ -260,4 +337,9 @@ public static class BoardUtils
         }
         bool IsSafeToColor(T ch, Dictionary<T, U> graph, int col) => graph[ch].All(nei => colors[nei] != col);
     }
+
+
+    public static bool IsInBounds(Board board, int x, int y) => IsInBounds(board.Width, board.Height, x, y);
+    public static bool IsInBounds(int w, int h, int x, int y) => 0 <= x && x < w && 0 <= y && y < h;
+
 }
