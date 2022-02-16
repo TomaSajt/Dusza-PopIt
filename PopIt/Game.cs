@@ -147,7 +147,7 @@ Következő játékos: Enter
     public override void Render()
     {
         Console.CursorVisible = false;
-        DrawString(PopItASCIIArt, Region.X + Board.Width - 12, 0);
+        DrawString(PopItASCIIArt, Region.X + Board.Width - 11, 0);
         for (int j = 0; j < Board.Height; j++)
         {
             StringBuilder sb = new();
