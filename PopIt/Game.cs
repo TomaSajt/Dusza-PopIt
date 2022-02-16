@@ -7,17 +7,28 @@ using System.Text;
 namespace PopIt;
 class Game : UIElement
 {
-    const string PopItASCIIArt =
- @"  ___          ___ _   
- | _ \___ _ __|_ _| |_ 
- |  _/ _ \ '_ \| ||  _|
- |_| \___/ .__/___|\__|
-         |_|           ";
-    const string RulesText =
+    const string
+PopItASCIIArt =
+@"  ___          ___ _   
+| _ \___ _ __|_ _| |_ 
+|  _/ _ \ '_ \| ||  _|
+|_| \___/ .__/___|\__|
+        |_|           ",
+RulesText =
 @"Mozgás: Nyíl gombok
 Gömböcske benyomása: Szóköz / Bal katt
 Következő játékos: Enter
-";
+",
+        TrophyASCIIArt =
+@"   .-=========-.
+   \'-=======-'/
+   _|   .=.   |_
+  ((|  {{1}}  |))
+   \|   /|\   |/
+    \__ '`' __/
+      _`) (`_
+    _/_______\_
+   /___________\";
     public int PlayerCount { get; private set; }
     public int CurrentPlayer { get; private set; }
     public int RemainingCells { get; private set; }
@@ -119,6 +130,7 @@ Következő játékos: Enter
     {
         Console.Clear();
         Console.WriteLine($"Gratulálok {CurrentPlayer}. játékos, győztél!");
+        DrawString(TrophyASCIIArt, Region.X, Region.Y);
         ReleaseThread = true;
     }
 
