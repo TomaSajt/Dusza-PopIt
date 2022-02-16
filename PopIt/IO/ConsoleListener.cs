@@ -41,6 +41,8 @@ static class ConsoleListener
         GetConsoleMode(outHandle, ref outMode);
         // This turns on ANSI escape code support for CMD
         outMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
+        outMode &= ~ENABLE_WRAP_AT_EOL_OUTPUT;
+
         SetConsoleMode(outHandle, outMode);
         IntPtr handleIn = GetStdHandle(STD_INPUT_HANDLE);
         new Thread(() =>

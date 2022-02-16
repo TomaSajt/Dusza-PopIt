@@ -3,7 +3,6 @@ using PopIt.Data;
 
 namespace PopIt.UI
 {
-    using MouseEventCallback = IOManager.MouseEventCallback;
     internal class UIElement
     {
         public Rectangle Region { get; protected set; }

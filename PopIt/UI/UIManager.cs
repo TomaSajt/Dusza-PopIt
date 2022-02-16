@@ -14,6 +14,7 @@ static class UIManager
     {
         IOManager.ResizeEvent += (w, h) =>
         {
+            Console.Clear();
             foreach (var el in UIElements) el.Render();
         };
         IOManager.KeyPressed += k =>

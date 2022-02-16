@@ -100,6 +100,7 @@ static class NativeMethods
 
 
     public const uint
+        ENABLE_WRAP_AT_EOL_OUTPUT = 1 << 1,
         ENABLE_VIRTUAL_TERMINAL_PROCESSING = 1 << 2,
         DISABLE_NEWLINE_AUTO_RETURN = 1 << 3,
         ENABLE_ECHO_INPUT = 1 << 2,
