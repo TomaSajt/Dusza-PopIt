@@ -165,6 +165,12 @@ Következő játékos: Enter
         DrawString($"{CurrentPlayer}. játékos", Region.Right + 5, Region.Y);
         DrawString(RulesText, Region.Right + 5, Region.Y + 2);
     }
+    /// <summary>
+    /// This function gets the string representation of a cell at position (x,y). The returned string will have ANSI color codes.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns>The string representation of the cell</returns>
     public string GetCellTextAt(int x, int y)
     {
         var cell = Board[x, y];
@@ -175,10 +181,31 @@ Következő játékos: Enter
     }
     bool IsNeighbourOrSelfPushedNow(int x, int y) =>
         IsValidPosition(x, y) && (Board[x, y].PushedNow || BoardUtils.GetNeighboursAt(Board, x, y).Any(ne => ne.PushedNow));
+    
+    /// <summary>
+    /// Checks if the cell at position (x,y) has any neighbours of the same color.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
     bool IsNeighbourPushedNowWithSameColor(int x, int y) =>
         IsValidPosition(x, y) && BoardUtils.GetNeighboursAt(Board, x, y).Any(ne => ne.PushedNow && ne.Char == Board[x, y].Char);
+    /// <summary>
+    /// Determines whether or not you can step from (fx,fy) to (tx,ty). This uses the <see cref="Selecting"/> state
+    /// </summary>
+    /// <param name="fx"></param>
+    /// <param name="fy"></param>
+    /// <param name="tx"></param>
+    /// <param name="ty"></param>
+    /// <returns></returns>
     bool CanStepToFrom(int fx, int fy, int tx, int ty) =>
         IsValidPosition(tx, ty) && (!Selecting || (Board[fx, fy].Char == Board[tx, ty].Char && !Board[tx, ty].PushedBefore && IsNeighbourOrSelfPushedNow(tx, ty)));
+    /// <summary>
+    /// Checks whether a position is valid. Being valid means being in bounds and not having '.' as the Char value
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
     bool IsValidPosition(int x, int y) => BoardUtils.IsInBounds(Board, x, y) && Board[x, y].Char != '.';
 
 }
