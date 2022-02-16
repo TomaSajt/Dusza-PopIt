@@ -7,6 +7,13 @@ using System.Text;
 namespace PopIt;
 class Game : UIElement
 {
+    const string PopItASCIIArt =
+        @"  ___          ___ _   
+ | _ \___ _ __|_ _| |_ 
+ |  _/ _ \ '_ \| ||  _|
+ |_| \___/ .__/___|\__|
+         |_|           
+";
     public int PlayerCount { get; private set; }
     public int CurrentPlayer { get; private set; }
     public int RemainingCells { get; private set; }
@@ -25,8 +32,8 @@ class Game : UIElement
         Selecting = false;
     }
 
-    public Game(UIElement parent, int posX, int posY, string boardPath, int playerCount) : this(parent, posX, posY, BoardUtils.CreateFromFile(boardPath), playerCount) { }
-    public Game(UIElement parent, int posX, int posY, Board board, int playerCount) : base(parent, new(posX, posY, board.Width * 2, board.Height))
+    public Game(string boardPath, int playerCount) : this(BoardUtils.CreateFromFile(boardPath), playerCount) { }
+    public Game(Board board, int playerCount) : base(new(10, 6, board.Width * 2, board.Height))
     {
         if (playerCount == 0) throw new ArgumentException($"Value of {nameof(playerCount)} cannot be less than 1.");
 
@@ -41,6 +48,7 @@ class Game : UIElement
         RemainingCells = board.CountCells();
         Selecting = false;
         ReleaseThread = false;
+        UIManager.Add(this);
     }
 
     /// <summary>
@@ -48,19 +56,16 @@ class Game : UIElement
     /// </summary>
     public void Run()
     {
-        IOManager.Run();
         Console.CursorVisible = false;
         Render();
         IOManager.KeyPressed += HandleKeyboardInput;
         while (!ReleaseThread) { }
-        IOManager.Stop();
-        Console.ReadKey();
+        IOManager.ReadKey();
+        UIManager.Remove(this);
     }
     public void HandleKeyboardInput(ConsoleKey key)
     {
         int X = CursorPosition.X, Y = CursorPosition.Y;
-
-
         switch (key)
         {
             case ConsoleKey.Enter:
@@ -116,7 +121,7 @@ class Game : UIElement
         ReleaseThread = true;
     }
 
-    protected override void OnMouseDown(int x, int y)
+    public override void OnMouseDown(int x, int y)
     {
         // The console cells are 1x2 so divide by 2 to align hitbox
         x /= 2;
@@ -126,9 +131,9 @@ class Game : UIElement
         CursorPosition = new(x, y);
         Render();
     }
-    public override void Draw()
+    public override void Render()
     {
-
+        DrawStringCentered(PopItASCIIArt, Region.X+Region.Width/2, 0);
         for (int j = 0; j < Board.Height; j++)
         {
             StringBuilder sb = new();
@@ -141,9 +146,8 @@ class Game : UIElement
             sb.Append(ConsoleCodes.RESET);
             Console.WriteLine(sb);
         }
-        Console.WriteLine();
+        Console.SetCursorPosition(Region.Right + 5, Region.Y);
         Console.WriteLine($"{CurrentPlayer}. játékos");
-        Console.WriteLine(CursorPosition);
     }
     public string GetCellTextAt(int x, int y)
     {

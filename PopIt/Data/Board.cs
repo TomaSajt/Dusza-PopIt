@@ -30,7 +30,10 @@ public class Board
             }
         }
     }
-
+    /// <summary>
+    /// Counts how many cells are
+    /// </summary>
+    /// <returns></returns>
     public int CountCells()
     {
         int count = 0;
@@ -38,7 +41,7 @@ public class Board
         {
             for (int j = 0; j < Height; j++)
             {
-                if (this[i, j].Char != ' ') count++;
+                if (this[i, j].Char != '.') count++;
             }
         }
         return count;

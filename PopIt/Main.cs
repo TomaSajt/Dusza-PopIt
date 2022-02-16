@@ -1,34 +1,39 @@
 ﻿using PopIt;
 using PopIt.Data;
-using PopIt.UI;
-using System.Text;
+using PopIt.IO;
 
 
 bool exit = false;
-var globalParent = UIElement.CreateGlobalParent();
+IOManager.Run();
 do
 {
     Console.Clear();
     Console.CursorVisible = true;
     Console.WriteLine("=== Pop It ===");
-    int sel = Selection(new[] { "Indítás meglévő pályán", "Pálya generálása és indítás", "Kilépés" });
+    int sel = IOManager.Selection(new[] { "Indítás meglévő pályán", "Pálya generálása és indítás", "Kilépés" });
+    Console.Clear();
     switch (sel)
     {
         case 1:
-            Console.Clear();
             Console.WriteLine("Add meg a pálya számát:");
-            new Game(globalParent, 10, 10, $"palya{ReadInt()}.txt", 2).Run();
-            //Todo: check if board exists
+            var path = $"palya{IOManager.ReadInt()}.txt";
+            if (!File.Exists(path))
+            {
+                Console.WriteLine("Ez a pálya nem létezik.");
+                break;
+            }
+            Console.Clear();
+            new Game(path, 2).Run();
             break;
         case 2:
-            Console.Clear();
             Console.WriteLine("Mekkora legyen a pálya? (4-10)");
-            var size = ReadInt();
+            var size = IOManager.ReadInt(x => x >= 4 && x <= 10);
             Console.WriteLine("Hány darab hajlítás legyen a pályán? (0-4)");
-            var bends = ReadInt();
+            var bends = IOManager.ReadInt(x => x >= 0 && x <= 4);
             var board = BoardUtils.GenerateBoard(size, size, bends);
             DoSaveBoard(board);
-            new Game(globalParent, 10, 10, board, 2).Run();
+            Console.Clear();
+            new Game(board, 2).Run();
             break;
         case 3:
             exit = true;
@@ -36,69 +41,24 @@ do
     }
 } while (!exit);
 
+// IOManager is still running, using IOManager.Stop() will still consume an extra key, so instead use force exit
+Environment.Exit(Environment.ExitCode);
+
 
 static void DoSaveBoard(Board board)
 {
     while (true)
     {
         Console.WriteLine("Mi legyen a pálya sorszáma? (későbbi betöltéshez)");
-        int id = ReadInt();
+        int id = IOManager.ReadInt();
         string path = $"palya{id}.txt";
         if (File.Exists(path))
         {
             Console.WriteLine("Ez a fájl már létezik, felül szeretné írni? (y/n) (i/n)");
-            if (!YesNoPrompt()) continue;
+            if (!IOManager.YesNoPrompt()) continue;
         }
         BoardUtils.SaveToFile(board, $"palya{id}.txt");
         break;
     }
 }
 
-static void EraseLine(int line)
-{
-    Console.SetCursorPosition(0, line);
-    Console.WriteLine(new string(' ', Console.WindowWidth));
-    Console.SetCursorPosition(0, line);
-}
-
-static int Selection(string[] choices)
-{
-    Console.WriteLine("Lehetőségek:");
-    StringBuilder sb = new();
-    for (int i = 0; i < choices.Length; i++)
-    {
-        sb.Append(i + 1);
-        sb.Append(" - ");
-        sb.AppendLine(choices[i]);
-    }
-
-    Console.Write(sb);
-
-    int n = ReadInt();
-    while (true)
-    {
-        if (n > 0 && n <= choices.Length)
-            return n;
-        EraseLine(Console.CursorTop - 1);
-        n = ReadInt();
-    }
-}
-
-static int ReadInt()
-{
-    while (true)
-    {
-        if (int.TryParse(Console.ReadLine(), out int n)) return n;
-        EraseLine(Console.CursorTop - 1);
-    }
-}
-
-static bool YesNoPrompt()
-{
-    while (true)
-    {
-        var key = Console.ReadKey(true).Key;
-        if (key is ConsoleKey.Y or ConsoleKey.I) return true;
-        if (key is ConsoleKey.N) return false;
-    }
-}

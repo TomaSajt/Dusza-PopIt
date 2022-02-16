@@ -1,14 +1,16 @@
-﻿namespace PopIt.IO;
-static class IOManager
+﻿using System.Text;
+
+namespace PopIt.IO;
+public static class IOManager
 {
     #region Events
-    public static event MouseEventData? LeftMouseDown;
-    public static event MouseEventData? LeftMouseUp;
-    public static event MouseEventData? RightMouseDown;
-    public static event MouseEventData? RightMouseUp;
-    public static event KeyEventData? KeyPressed;
-    public static event ResizeEventData? ResizeEvent;
-    public static event MouseEventData? MouseMove;
+    public static event MouseEventCallback? LeftMouseDown;
+    public static event MouseEventCallback? LeftMouseUp;
+    public static event MouseEventCallback? RightMouseDown;
+    public static event MouseEventCallback? RightMouseUp;
+    public static event KeyEventCallback? KeyPressed;
+    public static event ResizeEventCallback? ResizeEvent;
+    public static event MouseEventCallback? MouseMove;
     #endregion
     private static bool leftState = false;
     private static bool rightState = false;
@@ -26,16 +28,76 @@ static class IOManager
         ResizeEvent = null;
         MouseMove = null;
     }
+    public static bool YesNoPrompt()
+    {
+        while (true)
+        {
+            var key = ReadKey(true).Key;
+            if (key is ConsoleKey.Y or ConsoleKey.I) return true;
+            if (key is ConsoleKey.N) return false;
+        }
+    }
+    public static int Selection(string[] choices)
+    {
+        Console.WriteLine("Lehetőségek:");
+        StringBuilder sb = new();
+        for (int i = 0; i < choices.Length; i++)
+        {
+            sb.Append(i + 1);
+            sb.Append(" - ");
+            sb.AppendLine(choices[i]);
+        }
+
+        Console.Write(sb);
+
+        int n = ReadInt();
+        while (true)
+        {
+            if (n > 0 && n <= choices.Length)
+                return n;
+            EraseLine(Console.CursorTop - 1);
+            n = ReadInt();
+        }
+    }
+
+
+    public static int ReadInt(Predicate<int>? predicate = null) => WrapPauseUnpause(() =>
+        {
+            while (true)
+            {
+                if (int.TryParse(Console.ReadLine(), out int n) && (predicate is null || predicate(n))) return n;
+                EraseLine(Console.CursorTop - 1);
+            }
+        });
+
+    public static ConsoleKeyInfo ReadKey(bool intercept = false) => WrapPauseUnpause(() => Console.ReadKey(intercept));
+
+
+    static void EraseLine(int line)
+    {
+        Console.SetCursorPosition(0, line);
+        Console.WriteLine(new string(' ', Console.WindowWidth));
+        Console.SetCursorPosition(0, line);
+    }
+
+    static T WrapPauseUnpause<T>(Func<T> action)
+    {
+        ConsoleListener.Pause();
+        var res = action();
+        ConsoleListener.Unpause();
+        return res;
+    }
+
     public static void Run()
     {
         if (running) return;
         running = true;
 
         ConsoleListener.Run();
-        ConsoleListener.MouseEvent += e =>
+        ConsoleListener.MouseEventRecieved += e =>
         {
             {
-                if(e.dwMousePosition.X != prevX || e.dwMousePosition.Y != prevY)
+                if (e.dwMousePosition.X != prevX || e.dwMousePosition.Y != prevY)
                 {
                     MouseMove?.Invoke(e.dwMousePosition.X, e.dwMousePosition.Y);
                 }
@@ -64,14 +126,14 @@ static class IOManager
 
 
 
-        ConsoleListener.KeyEvent += e =>
+        ConsoleListener.KeyEventRecieved += e =>
         {
             if (e.bKeyDown)
             {
                 KeyPressed?.Invoke((ConsoleKey)e.wVirtualKeyCode);
             }
         };
-        ConsoleListener.WindowResizeEvent += e => ResizeEvent?.Invoke(e.dwSize.X, e.dwSize.Y);
+        ConsoleListener.WindowResizeEventRecieved += e => ResizeEvent?.Invoke(e.dwSize.X, e.dwSize.Y);
     }
     public static void Stop()
     {
@@ -79,7 +141,7 @@ static class IOManager
         ConsoleListener.Stop();
         ClearEvents();
     }
-    public delegate void MouseEventData(int x, int y);
-    public delegate void ResizeEventData(int w, int h);
-    public delegate void KeyEventData(ConsoleKey key);
+    public delegate void MouseEventCallback(int x, int y);
+    public delegate void ResizeEventCallback(int w, int h);
+    public delegate void KeyEventCallback(ConsoleKey key);
 }

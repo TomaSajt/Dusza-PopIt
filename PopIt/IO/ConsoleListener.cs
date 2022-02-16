@@ -5,32 +5,33 @@ static class ConsoleListener
 {
     #region Events
 
-    public static event ConsoleMouseEvent? MouseEvent;
-    public static event ConsoleKeyEvent? KeyEvent;
-    public static event ConsoleWindowBufferSizeEvent? WindowResizeEvent;
+    public static event ConsoleMouseEventCallback? MouseEventRecieved;
+    public static event ConsoleKeyEventCallback? KeyEventRecieved;
+    public static event ConsoleWindowBufferSizeEventCallback? WindowResizeEventRecieved;
 
     #endregion
 
     #region Delegates
 
-    public delegate void ConsoleMouseEvent(MOUSE_EVENT_RECORD r);
+    public delegate void ConsoleMouseEventCallback(MOUSE_EVENT_RECORD r);
 
-    public delegate void ConsoleKeyEvent(KEY_EVENT_RECORD r);
+    public delegate void ConsoleKeyEventCallback(KEY_EVENT_RECORD r);
 
-    public delegate void ConsoleWindowBufferSizeEvent(WINDOW_BUFFER_SIZE_RECORD r);
+    public delegate void ConsoleWindowBufferSizeEventCallback(WINDOW_BUFFER_SIZE_RECORD r);
 
     #endregion
 
     static ConsoleListener() => ClearEvents();
     private static void ClearEvents()
     {
-        MouseEvent = null;
-        KeyEvent = null;
-        WindowResizeEvent = null;
+        MouseEventRecieved = null;
+        KeyEventRecieved = null;
+        WindowResizeEventRecieved = null;
     }
 
     private static bool running = false;
     private static uint savedMode = 0;
+    private static bool paused = false;
     public static void Run()
     {
         if (running) return;
@@ -51,25 +52,28 @@ static class ConsoleListener
         {
             while (true)
             {
+                if (paused) continue;
                 uint numRead = 0;
                 INPUT_RECORD[] record = { new INPUT_RECORD() };
                 ReadConsoleInput(handleIn, record, 1, ref numRead);
-                if (!running)
+                if (paused || !running)
                 {
                     uint numWritten = 0;
+                    //Pipes the last read char back into stdin
                     WriteConsoleInput(handleIn, record, 1, ref numWritten);
-                    return;
-                }
+                    if (!running) return;
+                    continue;
+                };
                 switch (record[0].EventType)
                 {
                     case INPUT_RECORD.MOUSE_EVENT:
-                        MouseEvent?.Invoke(record[0].MouseEvent);
+                        MouseEventRecieved?.Invoke(record[0].MouseEvent);
                         break;
                     case INPUT_RECORD.KEY_EVENT:
-                        KeyEvent?.Invoke(record[0].KeyEvent);
+                        KeyEventRecieved?.Invoke(record[0].KeyEvent);
                         break;
                     case INPUT_RECORD.WINDOW_BUFFER_SIZE_EVENT:
-                        WindowResizeEvent?.Invoke(record[0].WindowBufferSizeEvent);
+                        WindowResizeEventRecieved?.Invoke(record[0].WindowBufferSizeEvent);
                         break;
                 }
             }
@@ -78,12 +82,14 @@ static class ConsoleListener
     public static void Stop()
     {
         running = false;
-        MouseEvent = null;
-        KeyEvent = null;
-        WindowResizeEvent = null;
+        MouseEventRecieved = null;
+        KeyEventRecieved = null;
+        WindowResizeEventRecieved = null;
 
         IntPtr inHandle = GetStdHandle(STD_INPUT_HANDLE);
         SetConsoleMode(inHandle, savedMode);
     }
+    public static void Pause() => paused = true;
+    public static void Unpause() => paused = false;
 }
 

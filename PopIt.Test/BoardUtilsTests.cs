@@ -1,8 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PopIt.Data;
 using PopIt.Exception;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PopIt.Test
 {

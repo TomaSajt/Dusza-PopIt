@@ -3,31 +3,16 @@ using PopIt.Data;
 
 namespace PopIt.UI
 {
-    using MouseEventCallback = IOManager.MouseEventData;
+    using MouseEventCallback = IOManager.MouseEventCallback;
     internal class UIElement
     {
         public Rectangle Region { get; protected set; }
-        public UIElement? Parent { get; private set; }
-        public List<UIElement> Children { get; } = new();
-        private bool mouseContained = false;
+        public bool MouseContained { get; set; }
 
         delegate bool ForwardCondition(int x, int y);
 
-        private UIElement()
+        public UIElement(Rectangle region)
         {
-            Parent = null;
-            Region = new Rectangle(0, 0, (short)Console.WindowWidth, (short)Console.WindowHeight);
-        }
-
-        public static UIElement CreateGlobalParent()
-        {
-            return new UIElement();
-        }
-
-        public UIElement(UIElement parent, Rectangle region)
-        {
-            Parent = parent;
-            Parent.Children.Add(this);
             Region = region;
             IOManager.LeftMouseUp += HandleMouseEvent(OnMouseUp, Region.Contains);
             IOManager.LeftMouseDown += HandleMouseEvent(OnMouseDown, Region.Contains);
@@ -35,18 +20,18 @@ namespace PopIt.UI
             {
                 if (Region.Contains(x, y))
                 {
-                    if (!mouseContained)
+                    if (!MouseContained)
                     {
-                        mouseContained = true;
+                        MouseContained = true;
                         OnMouseEnter();
                     }
                     return true; // call mouse move
                 }
                 else
                 {
-                    if (mouseContained)
+                    if (MouseContained)
                     {
-                        mouseContained = false;
+                        MouseContained = false;
                         OnMouseLeave();
                     }
                     return false; // don't call mouse move
@@ -71,41 +56,31 @@ namespace PopIt.UI
                 }
             };
         }
-
-        public void Render()
+        public static void DrawString(string[] lines, int x, int y)
         {
-            Draw();
-            Children.ForEach(c => c.Render());
+            for (int i = 0; i < lines.Length; i++)
+            {
+                Console.SetCursorPosition(x, y + i);
+                Console.WriteLine(lines[i]);
+            }
+        }
+        public static void DrawString(string str, int x, int y) => DrawString(str.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None), x, y);
+
+        public static void DrawStringCentered(string str, int x, int y)
+        {
+            string[] lines = str.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                Console.SetCursorPosition(x - lines[i].Length/2, y + i);
+                Console.WriteLine(lines[i]);
+            }
         }
 
-        public virtual void Draw()
-        {
-
-        }
-
-        protected virtual void OnMouseDown(int x, int y)
-        {
-
-        }
-
-        protected virtual void OnMouseUp(int x, int y)
-        {
-
-        }
-
-        protected virtual void OnMouseMove(int x, int y)
-        {
-
-        }
-
-        protected virtual void OnMouseEnter()
-        {
-
-        }
-
-        protected virtual void OnMouseLeave()
-        {
-
-        }
+        public virtual void Render() { }
+        public virtual void OnMouseDown(int x, int y) { }
+        public virtual void OnMouseUp(int x, int y) { }
+        public virtual void OnMouseMove(int x, int y) { }
+        public virtual void OnMouseEnter() { }
+        public virtual void OnMouseLeave() { }
     }
 }

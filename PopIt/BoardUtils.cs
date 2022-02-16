@@ -60,7 +60,6 @@ public static class BoardUtils
     public static Board GenerateBoard(int w, int h, int bends)
     {
         if (w < 4 || h < 4) throw new InvalidBoardFormatException("A generated board has to be at least 4 by 4");
-        if (w > 10 || h > 10) throw new InvalidBoardFormatException("A generated board can only be at most 10 by 10");
         static Point GetRandOffset() => rand.Next(2) == 0 ? new(0, 1) : new(1, 0);
         for (int iters = 0; iters < maxRetries; iters++)
         {
@@ -99,7 +98,7 @@ public static class BoardUtils
             }
             if (c <= 'z') return board;
         }
-        throw new InvalidBoardFormatException($"Couldn't generate a board of size ({w};{h}) after {maxRetries} tries.")
+        throw new InvalidBoardFormatException($"Couldn't generate a board of size ({w};{h}) after {maxRetries} tries.");
     }
 
     /// <summary>
@@ -224,6 +223,11 @@ public static class BoardUtils
             }
         }
     }
+    /// <summary>
+    /// Checks whether or not the cursor can get from any point to any other point without needing to click.
+    /// </summary>
+    /// <param name="board"></param>
+    /// <returns>Whether or not it's broken</returns>
     public static bool IsBoardBroken(Board board)
     {
         var p = FindFirstValidPos(board);
