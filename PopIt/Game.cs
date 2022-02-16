@@ -9,7 +9,7 @@ class Game : UIElement
 {
     const string
 PopItASCIIArt =
-@"  ___          ___ _   
+@" ___          ___ _   
 | _ \___ _ __|_ _| |_ 
 |  _/ _ \ '_ \| ||  _|
 |_| \___/ .__/___|\__|
