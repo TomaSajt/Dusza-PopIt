@@ -14,7 +14,6 @@ static class UIManager
     {
         IOManager.ResizeEvent += (w, h) =>
         {
-            throw new System.Exception();
             foreach (var el in UIElements)
             {
                 el.Render();

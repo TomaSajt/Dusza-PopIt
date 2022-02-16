@@ -3,7 +3,6 @@
 namespace PopIt.IO;
 public static class IOManager
 {
-    #region Events
     public static event MouseEventCallback? LeftMouseDown;
     public static event MouseEventCallback? LeftMouseUp;
     public static event MouseEventCallback? RightMouseDown;
@@ -11,7 +10,11 @@ public static class IOManager
     public static event KeyEventCallback? KeyPressed;
     public static event ResizeEventCallback? ResizeEvent;
     public static event MouseEventCallback? MouseMove;
-    #endregion
+
+    public delegate void MouseEventCallback(int x, int y);
+    public delegate void ResizeEventCallback(int w, int h);
+    public delegate void KeyEventCallback(ConsoleKey key);
+
     private static bool leftState = false;
     private static bool rightState = false;
     private static bool running = false;
@@ -141,7 +144,4 @@ public static class IOManager
         ConsoleListener.Stop();
         ClearEvents();
     }
-    public delegate void MouseEventCallback(int x, int y);
-    public delegate void ResizeEventCallback(int w, int h);
-    public delegate void KeyEventCallback(ConsoleKey key);
 }

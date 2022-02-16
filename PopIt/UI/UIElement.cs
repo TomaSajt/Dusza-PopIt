@@ -60,8 +60,8 @@ namespace PopIt.UI
         {
             for (int i = 0; i < lines.Length; i++)
             {
-                Console.SetCursorPosition(x, y + i);
-                Console.WriteLine(lines[i]);
+                Console.SetCursorPosition(Math.Max(0, x), y + i);
+                Console.WriteLine(lines[i][Math.Max(0, -x)..]);
             }
         }
         public static void DrawString(string str, int x, int y) => DrawString(str.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None), x, y);
@@ -71,7 +71,7 @@ namespace PopIt.UI
             string[] lines = str.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             for (int i = 0; i < lines.Length; i++)
             {
-                Console.SetCursorPosition(x - lines[i].Length/2, y + i);
+                Console.SetCursorPosition(x - lines[i].Length / 2, y + i);
                 Console.WriteLine(lines[i]);
             }
         }

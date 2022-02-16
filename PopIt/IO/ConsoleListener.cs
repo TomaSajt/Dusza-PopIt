@@ -3,23 +3,14 @@
 namespace PopIt.IO;
 static class ConsoleListener
 {
-    #region Events
 
     public static event ConsoleMouseEventCallback? MouseEventRecieved;
     public static event ConsoleKeyEventCallback? KeyEventRecieved;
     public static event ConsoleWindowBufferSizeEventCallback? WindowResizeEventRecieved;
 
-    #endregion
-
-    #region Delegates
-
     public delegate void ConsoleMouseEventCallback(MOUSE_EVENT_RECORD r);
-
     public delegate void ConsoleKeyEventCallback(KEY_EVENT_RECORD r);
-
     public delegate void ConsoleWindowBufferSizeEventCallback(WINDOW_BUFFER_SIZE_RECORD r);
-
-    #endregion
 
     static ConsoleListener() => ClearEvents();
     private static void ClearEvents()
@@ -30,7 +21,6 @@ static class ConsoleListener
     }
 
     private static bool running = false;
-    private static uint savedMode = 0;
     private static bool paused = false;
     public static void Run()
     {
@@ -44,9 +34,12 @@ static class ConsoleListener
         inMode &= ~ENABLE_QUICK_EDIT_MODE;
         inMode |= ENABLE_MOUSE_INPUT;
         SetConsoleMode(inHandle, inMode);
+
+
         IntPtr outHandle = GetStdHandle(STD_OUTPUT_HANDLE);
         uint outMode = 0;
         GetConsoleMode(outHandle, ref outMode);
+        // This turns on ANSI escape code support for CMD
         outMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
         SetConsoleMode(outHandle, outMode);
         IntPtr handleIn = GetStdHandle(STD_INPUT_HANDLE);
@@ -84,9 +77,7 @@ static class ConsoleListener
     public static void Stop()
     {
         running = false;
-        MouseEventRecieved = null;
-        KeyEventRecieved = null;
-        WindowResizeEventRecieved = null;
+        ClearEvents();
     }
     public static void Pause() => paused = true;
     public static void Unpause() => paused = false;

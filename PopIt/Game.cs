@@ -133,6 +133,7 @@ class Game : UIElement
     }
     public override void Render()
     {
+        Console.CursorVisible = false;
         DrawStringCentered(PopItASCIIArt, Region.X + Region.Width / 2, 0);
         for (int j = 0; j < Board.Height; j++)
         {
@@ -143,11 +144,15 @@ class Game : UIElement
             {
                 sb.Append(GetCellTextAt(i, j));
             }
+            // This prevents bleeding on resize
+            sb.Append(Color.BLACK.ToBackColStr());
+            sb.Append(Color.BLACK.ToForeColStr());
+            sb.Append('█');
             sb.Append(ConsoleCodes.RESET);
             Console.WriteLine(sb);
         }
-        Console.SetCursorPosition(Region.Right + 5, Region.Y);
-        Console.WriteLine($"{CurrentPlayer}. játékos");
+        Console.WriteLine(Color.BLACK.ToBackColStr());
+        DrawString($"{CurrentPlayer}. játékos", Region.Right + 5, Region.Y);
     }
     public string GetCellTextAt(int x, int y)
     {

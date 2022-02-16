@@ -1,10 +1,11 @@
 ﻿using PopIt;
 using PopIt.Data;
 using PopIt.IO;
-
+using PopIt.UI;
 
 bool exit = false;
 IOManager.Run();
+UIManager.Run();
 do
 {
     Console.Clear();

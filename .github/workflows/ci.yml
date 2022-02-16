@@ -1,9 +1,9 @@
-name: continuous integration
+name: ci workflow
 
 on: [push]
 
 jobs:
-  dotnet-publish:
+  dotnet-ci:
 
     runs-on: windows-latest
     steps:
