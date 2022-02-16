@@ -1,6 +1,9 @@
 ﻿namespace PopIt.Data;
-public record struct Color(int ID)
+public struct Color
 {
+    public int ID { get; }
+    private Color(int id) => ID = id;
+
     public static readonly Color BLACK = new(0);
     public static readonly Color RED = new(1);
     public static readonly Color GREEN = new(2);
