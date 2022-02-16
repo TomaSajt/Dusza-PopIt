@@ -21,6 +21,7 @@ do
             if (!File.Exists(path))
             {
                 Console.WriteLine("Ez a pálya nem létezik.");
+                IOManager.ReadKey();
                 break;
             }
             Console.Clear();

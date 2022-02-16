@@ -58,12 +58,11 @@ class Game : UIElement
     {
         Console.CursorVisible = false;
         Render();
-        IOManager.KeyPressed += HandleKeyboardInput;
         while (!ReleaseThread) { }
         IOManager.ReadKey();
         UIManager.Remove(this);
     }
-    public void HandleKeyboardInput(ConsoleKey key)
+    public override void OnKeyDown(ConsoleKey key)
     {
         int X = CursorPosition.X, Y = CursorPosition.Y;
         switch (key)
@@ -99,7 +98,7 @@ class Game : UIElement
         NextTurn();
         if (RemainingCells == 0)
         {
-            HandleWin();
+            DoWin();
             return false;
         }
         return true;
@@ -113,9 +112,8 @@ class Game : UIElement
         return true;
     }
 
-    private void HandleWin()
+    private void DoWin()
     {
-        IOManager.KeyPressed -= HandleKeyboardInput;
         Console.Clear();
         Console.WriteLine($"Gratulálok {CurrentPlayer}. játékos, győztél!");
         ReleaseThread = true;

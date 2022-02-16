@@ -14,10 +14,11 @@ static class UIManager
     {
         IOManager.ResizeEvent += (w, h) =>
         {
-            foreach (var el in UIElements)
-            {
-                el.Render();
-            }
+            foreach (var el in UIElements) el.Render();
+        };
+        IOManager.KeyPressed += k =>
+        {
+            foreach (var el in UIElements) el.OnKeyDown(k);
         };
         IOManager.LeftMouseUp += HandleMouseEvent(el => el.OnMouseUp, el => el.Region.Contains);
         IOManager.LeftMouseDown += HandleMouseEvent(el => el.OnMouseDown, el => el.Region.Contains);

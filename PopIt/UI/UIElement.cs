@@ -14,47 +14,6 @@ namespace PopIt.UI
         public UIElement(Rectangle region)
         {
             Region = region;
-            IOManager.LeftMouseUp += HandleMouseEvent(OnMouseUp, Region.Contains);
-            IOManager.LeftMouseDown += HandleMouseEvent(OnMouseDown, Region.Contains);
-            IOManager.MouseMove += HandleMouseEvent(OnMouseMove, (x, y) =>
-            {
-                if (Region.Contains(x, y))
-                {
-                    if (!MouseContained)
-                    {
-                        MouseContained = true;
-                        OnMouseEnter();
-                    }
-                    return true; // call mouse move
-                }
-                else
-                {
-                    if (MouseContained)
-                    {
-                        MouseContained = false;
-                        OnMouseLeave();
-                    }
-                    return false; // don't call mouse move
-                }
-            });
-        }
-
-        /// <summary>
-        /// Wraps a callback with a custom condition, and calls it with relative coordinates.
-        /// </summary>
-        /// <param name="callback">The callback to wrap around.</param>
-        /// <param name="condition">(short x, short y) => bool; The callback runs if this evaluates to true.</param>
-        /// <returns>The handler to add to the event.</returns>
-        MouseEventCallback HandleMouseEvent(MouseEventCallback callback, ForwardCondition? condition = null)
-        {
-            return (x, y) =>
-            {
-                if (condition is not null && condition(x, y))
-                {
-                    // call with relative coords
-                    callback(x - Region.X, y - Region.Y);
-                }
-            };
         }
         public static void DrawString(string[] lines, int x, int y)
         {
@@ -82,5 +41,6 @@ namespace PopIt.UI
         public virtual void OnMouseMove(int x, int y) { }
         public virtual void OnMouseEnter() { }
         public virtual void OnMouseLeave() { }
+        public virtual void OnKeyDown(ConsoleKey key) { }
     }
 }
