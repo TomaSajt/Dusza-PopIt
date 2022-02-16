@@ -38,15 +38,17 @@ static class ConsoleListener
         running = true;
 
         IntPtr inHandle = GetStdHandle(STD_INPUT_HANDLE);
-        uint mode = 0;
-        GetConsoleMode(inHandle, ref mode);
-        savedMode = mode;
+        uint inMode = 0;
+        GetConsoleMode(inHandle, ref inMode);
         // Disables quick edit mode, which would override mouse events if not turned off
-        mode &= ~ENABLE_QUICK_EDIT_MODE;
-        mode |= ENABLE_MOUSE_INPUT;
-        SetConsoleMode(inHandle, mode);
-
-
+        inMode &= ~ENABLE_QUICK_EDIT_MODE;
+        inMode |= ENABLE_MOUSE_INPUT;
+        SetConsoleMode(inHandle, inMode);
+        IntPtr outHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+        uint outMode = 0;
+        GetConsoleMode(outHandle, ref outMode);
+        outMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
+        SetConsoleMode(outHandle, outMode);
         IntPtr handleIn = GetStdHandle(STD_INPUT_HANDLE);
         new Thread(() =>
         {
@@ -85,9 +87,6 @@ static class ConsoleListener
         MouseEventRecieved = null;
         KeyEventRecieved = null;
         WindowResizeEventRecieved = null;
-
-        IntPtr inHandle = GetStdHandle(STD_INPUT_HANDLE);
-        SetConsoleMode(inHandle, savedMode);
     }
     public static void Pause() => paused = true;
     public static void Unpause() => paused = false;

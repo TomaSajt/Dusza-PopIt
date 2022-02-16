@@ -17,7 +17,7 @@ class Game : UIElement
     public int PlayerCount { get; private set; }
     public int CurrentPlayer { get; private set; }
     public int RemainingCells { get; private set; }
-    private Dictionary<char, ColorPair> ColorMap { get; }
+    private Dictionary<char, Color> ColorMap { get; }
     private Board Board { get; }
     private Point CursorPosition { get; set; }
     private bool Selecting { get; set; }
@@ -133,11 +133,11 @@ class Game : UIElement
     }
     public override void Render()
     {
-        DrawStringCentered(PopItASCIIArt, Region.X+Region.Width/2, 0);
+        DrawStringCentered(PopItASCIIArt, Region.X + Region.Width / 2, 0);
         for (int j = 0; j < Board.Height; j++)
         {
             StringBuilder sb = new();
-            sb.Append(Color.DARK_MAGENTA.ToForeColStr());
+            sb.Append(Color.MAGENTA.ToForeColStr());
             Console.SetCursorPosition(Region.X, Region.Y + j);
             for (int i = 0; i < Board.Width; i++)
             {
@@ -152,25 +152,17 @@ class Game : UIElement
     public string GetCellTextAt(int x, int y)
     {
         var cell = Board[x, y];
-        var col = cell.Char == '.' ? Color.BLACK : Board[x, y].Pushed ? ColorMap[cell.Char].Light : ColorMap[cell.Char].Dark;
+        var col = cell.Char == '.' ? Color.BLACK.ToBackColStr() : Board[x, y].Pushed ? ColorMap[cell.Char].ToBackColStrHI() : ColorMap[cell.Char].ToBackColStr();
         var posMatch = new Point(x, y) == CursorPosition;
         var text = cell.PushedBefore ? posMatch ? "[]" : "##" : posMatch ? "><" : "  ";
-        return $"{col.ToBackColStr()}{text}";
+        return $"{col}{text}";
     }
     bool IsNeighbourOrSelfPushedNow(int x, int y) =>
-        (IsValidPosition(x, y) && Board[x, y].PushedNow) ||
-        (IsValidPosition(x + 1, y) && Board[x + 1, y].PushedNow) ||
-        (IsValidPosition(x - 1, y) && Board[x - 1, y].PushedNow) ||
-        (IsValidPosition(x, y + 1) && Board[x, y + 1].PushedNow) ||
-        (IsValidPosition(x, y - 1) && Board[x, y - 1].PushedNow);
+        IsValidPosition(x, y) && (Board[x, y].PushedNow || BoardUtils.GetNeighboursAt(Board, x, y).Any(ne => ne.PushedNow));
     bool IsNeighbourPushedNowWithSameColor(int x, int y) =>
-        IsValidPosition(x, y) && (
-            (IsValidPosition(x + 1, y) && Board[x + 1, y].PushedNow && Board[x, y].Char == Board[x + 1, y].Char) ||
-            (IsValidPosition(x - 1, y) && Board[x - 1, y].PushedNow && Board[x, y].Char == Board[x - 1, y].Char) ||
-            (IsValidPosition(x, y + 1) && Board[x, y + 1].PushedNow && Board[x, y].Char == Board[x, y + 1].Char) ||
-            (IsValidPosition(x, y - 1) && Board[x, y - 1].PushedNow && Board[x, y].Char == Board[x, y - 1].Char)
-        );
-    bool CanStepToFrom(int fx, int fy, int tx, int ty) => IsValidPosition(tx, ty) && (!Selecting || (Board[fx, fy].Char == Board[tx, ty].Char && !Board[tx, ty].PushedBefore && IsNeighbourOrSelfPushedNow(tx, ty)));
+        IsValidPosition(x, y) && BoardUtils.GetNeighboursAt(Board, x, y).Any(ne => ne.PushedNow && ne.Char == Board[x, y].Char);
+    bool CanStepToFrom(int fx, int fy, int tx, int ty) =>
+        IsValidPosition(tx, ty) && (!Selecting || (Board[fx, fy].Char == Board[tx, ty].Char && !Board[tx, ty].PushedBefore && IsNeighbourOrSelfPushedNow(tx, ty)));
     bool IsValidPosition(int x, int y) => BoardUtils.IsInBounds(Board, x, y) && Board[x, y].Char != '.';
 
 }

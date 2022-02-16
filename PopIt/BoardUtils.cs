@@ -278,9 +278,9 @@ public static class BoardUtils
     /// <param name="board">The board</param>
     /// <param name="colorPairs"></param>
     /// <returns>A valid coloring of the board</returns>
-    public static Dictionary<char, ColorPair> CreateColorMap(Board board)
+    public static Dictionary<char, Color> CreateColorMap(Board board)
     {
-        var colorPairs = new ColorPair[] { ColorPair.Blue, ColorPair.Red, ColorPair.Green, ColorPair.Yellow };
+        var colorPairs = new Color[] { Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW };
         Dictionary<char, HashSet<char>> adjDict = new();
         for (int i = 0; i < board.Width; i++)
         {
