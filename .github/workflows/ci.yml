@@ -37,11 +37,11 @@ jobs:
       - name: Upload publish results
         uses: actions/upload-artifact@v2
         with:
-          name: PopIt.exe
+          name: PopIt
           path: Publish/PopIt.exe
 
       - name: Upload publish sc results
         uses: actions/upload-artifact@v2
         with:
-          name: PopIt-SC.exe
+          name: PopIt-SC
           path: PublishSC/PopIt.exe

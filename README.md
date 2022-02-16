@@ -28,7 +28,7 @@ The game ends when all of the cells have been pushed. In 2 player mode, the winn
 - [x] Add roadmap
 - [ ] Better IO/UI
     - [ ] Interface
-        - [ ] Menu system
+        - [x] Menu system
         - [ ] Buttons
     - [x] Input
         - [x] Arrow Controls
