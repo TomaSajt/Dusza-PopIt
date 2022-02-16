@@ -17,24 +17,18 @@ namespace PopIt.UI
         }
         public static void DrawString(string[] lines, int x, int y)
         {
-            for (int i = 0; i < lines.Length; i++)
+            try
             {
-                Console.SetCursorPosition(Math.Max(0, x), y + i);
-                Console.WriteLine(lines[i][Math.Max(0, -x)..]);
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    Console.SetCursorPosition(Math.Max(0, x), y + i);
+                    Console.WriteLine(lines[i][Math.Max(0, -x)..]);
+                }
             }
+            catch { }
         }
         public static void DrawString(string str, int x, int y) => DrawString(str.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None), x, y);
-
-        public static void DrawStringCentered(string str, int x, int y)
-        {
-            string[] lines = str.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-            for (int i = 0; i < lines.Length; i++)
-            {
-                Console.SetCursorPosition(x - lines[i].Length / 2, y + i);
-                Console.WriteLine(lines[i]);
-            }
-        }
-
         public virtual void Render() { }
         public virtual void OnMouseDown(int x, int y) { }
         public virtual void OnMouseUp(int x, int y) { }

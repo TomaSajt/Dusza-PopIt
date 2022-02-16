@@ -8,11 +8,15 @@ namespace PopIt;
 class Game : UIElement
 {
     const string PopItASCIIArt =
-        @"  ___          ___ _   
+ @"  ___          ___ _   
  | _ \___ _ __|_ _| |_ 
  |  _/ _ \ '_ \| ||  _|
  |_| \___/ .__/___|\__|
-         |_|           
+         |_|           ";
+    const string RulesText =
+@"Mozgás: Nyíl gombok
+Gömböcske benyomása: Szóköz / Bal katt
+Következő játékos: Enter
 ";
     public int PlayerCount { get; private set; }
     public int CurrentPlayer { get; private set; }
@@ -41,7 +45,6 @@ class Game : UIElement
         CurrentPlayer = 1;
         Board = board;
         if (BoardUtils.AreComponentsBroken(Board)) throw new InvalidBoardFormatException("The board cannot contain the same letter in a different, not connected component");
-        //The board cannot contain two different islands, as it has to be traversable by the arrow keys
         if (BoardUtils.IsBoardBroken(Board)) throw new InvalidBoardFormatException("The board should be traversable from every point to every other point.");
         CursorPosition = BoardUtils.FindFirstValidPos(Board);
         ColorMap = BoardUtils.CreateColorMap(Board);
@@ -132,16 +135,13 @@ class Game : UIElement
     public override void Render()
     {
         Console.CursorVisible = false;
-        DrawStringCentered(PopItASCIIArt, Region.X + Region.Width / 2, 0);
+        DrawString(PopItASCIIArt, Region.X + Board.Width - 12, 0);
         for (int j = 0; j < Board.Height; j++)
         {
             StringBuilder sb = new();
             sb.Append(Color.MAGENTA.ToForeColStr());
             Console.SetCursorPosition(Region.X, Region.Y + j);
-            for (int i = 0; i < Board.Width; i++)
-            {
-                sb.Append(GetCellTextAt(i, j));
-            }
+            for (int i = 0; i < Board.Width; i++) sb.Append(GetCellTextAt(i, j));
             // This prevents bleeding on resize
             sb.Append(Color.BLACK.ToBackColStr());
             sb.Append(Color.BLACK.ToForeColStr());
@@ -151,6 +151,7 @@ class Game : UIElement
         }
         Console.WriteLine(Color.BLACK.ToBackColStr());
         DrawString($"{CurrentPlayer}. játékos", Region.Right + 5, Region.Y);
+        DrawString(RulesText, Region.Right + 5, Region.Y + 2);
     }
     public string GetCellTextAt(int x, int y)
     {
